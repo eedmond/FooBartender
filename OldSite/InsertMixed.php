@@ -50,14 +50,14 @@
 		$queryResult->closeCursor();
 	}
 
-	$query = $query . "\", \"" . $duration . "\", 0, " . (string)$alcoholic . ");";
+	$query = $query . "\", \"" . $duration . "\", 0, " . (string)$alcoholic . ", 0, 0);";
 	$db->exec($query);
-	exec("../functions/updateMixed");
 	unset($db);
+	exec("../functions/updateMixed");
 
 	echo "<script type='text/javascript'>";
 	echo "alert('Successfully added " . $_POST['drinkName'] . "')"; 
-	echo "</script>";  
+	echo "</script>";
 	echo "<script>window.history.go(-1)</script>";
 	die();
 ?>

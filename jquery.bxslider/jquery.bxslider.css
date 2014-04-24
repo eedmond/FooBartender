@@ -17,6 +17,7 @@
 	position: relative;
 	margin: 0 auto 60px;
 	padding: 0;
+	-ms-touch-action: none;
 	*zoom: 1;
 }
 

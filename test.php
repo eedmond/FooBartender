@@ -530,8 +530,8 @@ function submitMixed()
 				<ul class="icons">
 					<li><a href="http://twitter.come/justsixguys/" class="fa fa-twitter solo"><span>Twitter</span></a></li>
 					<li><a href="https://www.facebook.com/foobartender/" class="fa fa-facebook solo"><span>Facebook</span></a></li>
-					<li><a href="http://html5up.net/" class="fa fa-dribbble solo"><span>Dribbble</span></a></li>
-					<li><a href="http://html5up.net/" class="fa fa-github solo"><span>GitHub</span></a></li>
+					<li><a href="About/about.html" class="fa fa-dribbble solo"><span>Dribbble</span></a></li>
+					<li><a href="About/about.html" class="fa fa-github solo"><span>GitHub</span></a></li>
 					<li><a href="OldSite/AdminPortal.php" class="fa fa-gear solo"><span>Admin Portal</span></a></li>
 				</ul>
 				<div class="copyright">

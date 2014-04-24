@@ -9,7 +9,7 @@
 	{
 		$db->beginTransaction();
 		
-		$unsetString = "update single set station=-1, volume=0, proof=0;";
+		$unsetString = "update single set station=-1, volume=0";
 		$db->exec($unsetString);
 
 		for ($i = 0; $i < 16; $i++)
@@ -29,7 +29,7 @@
 		}
 
 		$success = $db->commit();
-		exec("functions/updateMixed");
+		exec("../functions/updateMixed");
 		header("Location: AdminPortal.php?update=" . $success);
 		die();
 	}

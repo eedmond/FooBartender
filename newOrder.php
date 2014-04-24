@@ -39,13 +39,13 @@
 			<section id="header" class="dark">
 				<?php
 				
-				function ShowRating($drink)
+				/*function ShowRating($drink)
 				{
-				/*
+				
 				Call UPDATE mixed SET numRatings=numRatings+1,
 						rating=rating+[rating] WHERE name=[drinkName]
-				*/
-				}
+				
+				}*/
 
 				function GenOrderString($custom, $drink)
 				{
@@ -98,49 +98,89 @@
 						$duration = $duration . (string)floor(($part * 175 / $totalParts)) . "|";
 
 					$order = $order . "\" \"" . $duration . "\"";
-					echo '<p>' . $order . '</p>';
+					//echo '<p>' . $order . '</p>';
 					return $order;
 				}
 				
-				if (isset($_GET['opened'])) {
-					$_POST = $_SESSION['post-data'];
-					echo '<header><h1>Thank you for ordering a ', $drink, '</h1><br>';
-					$text = exec(GenOrderString($_GET['custom'], $drink));
-					session_destroy();
-					if ($_GET['custom'] == "false")
+				// Opened is set when the page is about to reload itself
+				if (isset($_SESSION['valid']) && $_SESSION['valid'] != '0')
+				{
+					if (!isset($_SESSION['drinkName']))
+					{
+						$file = file("CustomDrinkNames.txt");
+						$randomDrinkName = $file[rand(0, count($file) - 1)];
+						$_SESSION['randDrinkName'] = $randomDrinkName;
+					} 
+					if ($drink == 'custom' || strstr($drink, 'Eric\'s Jamaican Surprise'))
+					{
+						echo '<header><h1>Thank you for ordering a ', $_SESSION['randDrinkName'], '</h1><br>';
+					}
+					else
+					{
+						echo '<header><h1>Thank you for ordering a ', $drink, '</h1><br>';
+					}
+					
+					// Text is set when the function returns
+					if ($_SESSION['valid'] == '1')
+					{
+						$_SESSION['valid'] = '2';
+						$_POST = $_SESSION['post-data'];
+						$_SESSION['drinkName'] = $drink;
+						$text = exec(GenOrderString($_GET['custom'], $drink));
+						$_SESSION['text'] = $text;
+					}
+					else
+					{
+						while (!isset($_SESSION['text']))
+						{
+							sleep(2);
+						}
+						$text = $_SESSION['text'];
+					}
+					if ($_GET['custom'] == "false" && !strstr($drink, 'Eric\'s Jamaican Surprise'))
 					{
 						//setup rating thingy
 						//ShowRating($drink);
 						?>
-						<h1>Rate this drink!</h1><br>
-						<input type="number" id="rating" value="0" min="0" max="10">
-						<input type="submit" id="rate" name="rate" value="Rate" onclick="javascript:onRateClick();" alt="Rate">
 
+						<h1>Rate this drink!</h1><br>
+						<input type="number" id="rating" value="0" min="0" max="10">/10
+						<input type="button" class="button" id="rate" name="rate" value="Rate" alt="Rate">
+						
 						<script>
-							function onRateClick()
-							{
-								var drinkName=<?php echo $drink ?>;
-								var rating=document.getElementById("rating").value;
-							}
+							$('input[id="rate"]').click(function(){
+								$.ajax({
+									url: 'rateDrink.php',
+									type: 'POST',
+									data: {
+										number: document.getElementById("rating").value
+									},
+									success: function() {
+										alert("It Worked!");
+									}
+								});
+							});
 						</script>
-						<?
+						
+						<?php
 					}
 					echo '<p>', $text, '</p><br>';
 					//echo '<p>', implode($alltext), '</p></header>';
-					echo '<footer><a href="index.php/#order" class="button scrolly">Back to FooBartender</a></footer>';
+					echo '<footer><a href="index.php" class="button scrolly">Back to FooBartender</a></footer>';
 				
 				} else {
 					$_SESSION['post-data'] = $_POST;
 					$_SESSION['id'] = '1';	
+					$_SESSION['valid'] = '1';
 				?>
 					<header>
-						<h1>Thank you for ordering a <?php $drink; ?></h1>
+						<h1>Thank you for ordering a <?php echo $drink ?></h1>
 						<p>Please wait while your order is being processed.</p><br>
 						<p>Think about it. There's millions of calculations I'm processing.</p>
 					</header>
 					
 					<script language="javascript">
-						location.href="<?php echo $_SERVER['SCRIPT_NAME'], '?', $_SERVER['QUERY_STRING'], "&opened=0"?>";
+						location.href="<?php echo $_SERVER['SCRIPT_NAME'], '?', $_SERVER['QUERY_STRING'] ?>";
 					</script>
 				<?php
 				}

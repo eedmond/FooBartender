@@ -7,11 +7,12 @@
 <html>
 	<head>
 		<title>Welcome to the FooBartender</title>
+		<link rel="icon" type="image/png" href="images/nonalcoholic.png"/>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
 		<link href="http://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic" rel="stylesheet" type="text/css" />
-		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+		<![if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/skel.min.js"></script>
 		<script src="js/init.js"></script>
@@ -180,8 +181,8 @@ $.ajax(
 
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
 	{
-		//$('.bx-prev').hide();
-		//$('.bx-next').hide();
+		$('.bx-prev').hide();
+		$('.bx-next').hide();
 		$('.mobilenav').show();
 	}
   
@@ -216,7 +217,7 @@ function MouseEnter(type, element)
 	$(descText).stop(true, true);
 	if ($("#"+ type + "Slider .image.selected").hasClass("selected")) return;
 	element.fadeTo("slow", 1);
-	$(descText).text(element.attr('name'));
+	$(descText).html(element.attr('name').replace(/\n/g, "<br />"));
 	$(descText).fadeIn("slow");
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
 		element.trigger("click");
@@ -283,16 +284,24 @@ function ClickFunction(type, element)
 		element.addClass("selected");
 		$(descText).stop(true, true);
 		$(descText).fadeIn("slow");
-		$(descText).text(element.attr('name'));
+		$(descText).html(element.attr('name').replace(/\n/g, "<br />"));
 		$(orderButt).stop(true, false);
 		$(orderButt).fadeIn("slow");
 	}
 }
 
+function FreeSession()
+{
+    xmlhttp=new XMLHttpRequest();
+	xmlhttp.open("GET", "session_free.php", false);
+	xmlhttp.send();
+}
+
 function submitDrink(drinkType)
 {
+	FreeSession();
 	var drinkData = $(".image.selected");
-	var mixedName = drinkData.attr('name').substring(0, drinkData.attr('name').search(" Contains"));
+	var mixedName = drinkData.attr('name').substring(0, drinkData.attr('name').search("\n"));
 	var orderPostFix = "";
 	if (mixedName == "Eric's Jamaican Surprise")
 	{
@@ -307,13 +316,15 @@ function submitDrink(drinkType)
 
 function submitShot()
 {
-	var mixedName = $(".image.selected");
+	FreeSession();
+	var drinkData = $(".image.selected");
+	var mixedName = drinkData.attr('name').substring(0, drinkData.attr('name').search("\n"));
 	var orderPostFix = "";
-	if (mixedName.attr('name') == "Eric's Jamaican Surprise")
+	if (mixedName == "Eric's Jamaican Surprise")
 		orderPostFix = "|Shot";
 		
 	$("body").fadeOut(1000);
-	location.href = "newOrder.php?custom=true&drinkName=" + mixedName.attr('name') + orderPostFix;
+	location.href = "newOrder.php?custom=true&drinkName=" + mixedName + orderPostFix;
 }
 
 </script>
@@ -339,15 +350,14 @@ function submitShot()
 								</section>
 							</div>
 							<div class="8u">
-								<div class="slider" id="mixedDrinkSlider">
-								</div>
+								<div class="slider" id="mixedDrinkSlider"></div>
 							</div>
-								<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
-									<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
-									<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
-									<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
-									<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
-								</ul>
+							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
+								<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
+								<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
+								<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
+								<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
+							</ul>
 						</div>
 					</div>
 				</div>
@@ -375,17 +385,14 @@ function submitShot()
 								</section>
 							</div>
 							<div class="8u">
-								<div class="slider" id="shotSlider">
-								</div>
+								<div class="slider" id="shotSlider"></div>
 							</div>
-							<div>
-								<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
-									<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
-									<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
-									<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
-									<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
-								</ul>
-							</div>
+							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
+								<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
+								<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
+								<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
+								<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
+							</ul>
 						</div>
 					</div>
 				</div>
@@ -416,14 +423,12 @@ function submitShot()
 								<div class="slider" id="nonAlcoholicSlider">
 								</div>
 							</div>
-							<div>
 								<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
 									<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
 									<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
 									<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
 									<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
 								</ul>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -438,15 +443,15 @@ function submitShot()
 					</div>
 				</header>
 				<div class="content dark style2">
-				<div class="header">
-   				<div align="center">All the power you could ever ask for is right at your finger tips</div><br>
-				</div>
-				<div class="container small">
-					<form id="customForm" method="post" action="newOrder.php?custom=true&drinkname=custom">
+					<div class="header">
+						<div align="center">All the power you could ever ask for is right at your fingertips</div><br>
+					</div>
+					<div class="container small">
+						<form id="customForm" method="post" action="newOrder.php?custom=true&drinkName=custom">
 							<div class="row">
 								<div class="12u" align="center">
 									<ul class="actions">
-										<li><input type="submit" class="button" value="Order Custom Drink" /></li>
+										<li><input type="submit" class="button" value="Order Custom Drink" onclick="javascript:DestroySession();" /></li>
 										<li><input type="reset" class="button alt" value="Clear Order" onclick="javascript:onClearClick();" /></li>
 									</ul>
 								</div>
@@ -482,48 +487,47 @@ function submitShot()
 							}
 						unset($db);
 						?>
-					</form>
-					<div>
-						<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
-							<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
-							<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
-							<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
-							<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
-						</ul>
+						</form>
+						<div class="row">
+							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
+								<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
+								<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
+								<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
+								<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
+							</ul>
+						</div>	
 					</div>
-				</div>
-
-				<script>
-					var customCounter = 0;
-					function onPlusClick() {
-						customCounter = customCounter + 1;
-						var textID = "text" + customCounter;
-						var partsID = "parts" + customCounter;
-						var plusID = "plus" + customCounter;
-						var prevPlusID = "plus" + (customCounter - 1);
-						var textDOM = document.getElementsByName(textID)[0];
-						var partsDOM = document.getElementsByName(partsID)[0];
-						var plusDOM = document.getElementsByName(plusID)[0];
-						var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
-						$(textDOM).fadeTo("slow", 1);
-						$(partsDOM).fadeTo("slow", 1);
-						$(plusDOM).fadeIn("slow");
-					}
-
-					function onClearClick() {
-						while (customCounter > 0) {
+					<script>
+						var customCounter = 0;
+						function onPlusClick() {
+							customCounter = customCounter + 1;
 							var textID = "text" + customCounter;
 							var partsID = "parts" + customCounter;
 							var plusID = "plus" + customCounter;
-							document.getElementsByName(textID)[0].style.display="none";
-							document.getElementsByName(partsID)[0].style.display="none";
-							document.getElementsByName(plusID)[0].style.display="none";
-							customCounter = customCounter - 1;
+							var prevPlusID = "plus" + (customCounter - 1);
+							var textDOM = document.getElementsByName(textID)[0];
+							var partsDOM = document.getElementsByName(partsID)[0];
+							var plusDOM = document.getElementsByName(plusID)[0];
+							var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
+							$(textDOM).fadeTo("slow", 1);
+							$(partsDOM).fadeTo("slow", 1);
+							$(plusDOM).fadeIn("slow");
 						}
-						document.getElementsByName("plus0")[0].style.display="inline";
-					}
-				</script>	
 
+						function onClearClick() {
+							while (customCounter > 0) {
+								var textID = "text" + customCounter;
+								var partsID = "parts" + customCounter;
+								var plusID = "plus" + customCounter;
+								document.getElementsByName(textID)[0].style.display="none";
+								document.getElementsByName(partsID)[0].style.display="none";
+								document.getElementsByName(plusID)[0].style.display="none";
+								customCounter = customCounter - 1;
+							}
+							document.getElementsByName("plus0")[0].style.display="inline";
+						}
+					</script>	
+				</div>
 			</section>
 			
 		<!-- Feedback -->
@@ -534,9 +538,9 @@ function submitShot()
 					</div>
 				</header>
 				<div class="content dark style2">
-				<div class="header">
-   				<div align="center">Use to form below to give us any feedback or suggestions!</div><br><br>
-				</div>
+					<div class="header">
+						<div align="center">Use to form below to give us any feedback or suggestions!</div><br><br>
+					</div>
 					<div class="container small">
 						<form method="post" action="mailCustom.php">
 							<div class="row half">
@@ -555,14 +559,14 @@ function submitShot()
 								</div>
 							</div>
 						</form>
-							<div>
+						<div class="row">
 								<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
 									<li><a href="#Mixed" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
 									<li><a href="#Shots" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"></a></li>
 									<li><a href="#Non_Alcoholic" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"></a></li>
 									<li><a href="#Custom" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"></a></li>
 								</ul>
-							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -570,9 +574,9 @@ function submitShot()
 		<!-- Footer -->
 			<section id="footer">
 				<ul class="icons">
-					<li><a href="http://twitter.come/justsixguys/" class="fa fa-twitter solo"><span>Twitter</span></a></li>
+					<li><a href="http://twitter.com/justsixguys/" class="fa fa-twitter solo"><span>Twitter</span></a></li>
 					<li><a href="https://www.facebook.com/foobartender/" class="fa fa-facebook solo"><span>Facebook</span></a></li>
-					<li><a href="http://html5up.net/" class="fa fa-dribbble solo"><span>Dribbble</span></a></li>
+					<li><a href="About/about.html" class="fa fa-dribbble solo"><span>Dribbble</span></a></li>
 					<li><a href="http://html5up.net/" class="fa fa-github solo"><span>GitHub</span></a></li>
 					<li><a href="OldSite/AdminPortal.php" class="fa fa-gears"> </a> </li>
 				</ul>

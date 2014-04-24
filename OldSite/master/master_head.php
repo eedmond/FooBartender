@@ -26,7 +26,7 @@
 	{
 ?>
 	      <h4>
-		<a href="../index.html?logout=true">Log Out</a>
+		<a href="../../index.php?logout=true">Log Out</a>
 	      </h4>
 <?php
 	}

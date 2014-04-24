@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <sqlite3.h>
+#include <unistd.h>
 
 bool foundLoc = false;
 std::vector<int> stations;
@@ -151,14 +152,15 @@ void GetStation ()
    char sql[50] = "SELECT station FROM stations WHERE amount=0";
    const char* data = "Callback function called";
 
-   while (!foundLoc)
-   {
 	rc = sqlite3_exec(db, sql, callback, (void*)data, NULL);
 
-	if (!foundLoc)
-		for(int i = 0; i < 50000000; ++i);
-   }
-
+	while (!foundLoc)
+	{
+		rc = sqlite3_exec(db, sql, callback, (void*)data, NULL);
+		usleep(5000000);
+		printf("Queue appears to be full. Please wait.\n");
+	}
+	
 	std::random_shuffle (stations.begin(), stations.end(), randomize);
 
 	strcpy(sql, "UPDATE stations SET amount=amount+1 WHERE station=");
@@ -257,7 +259,7 @@ int main(int argc, char* argv[])
    rc = sqlite3_open("/var/www/FB.db", &db);
    while ( rc ){
    	printf("Can't open database: %s, attempting to reconnect\n", sqlite3_errmsg(db));
-	for (int i = 0; i < 100000000; ++i);
+	usleep(5000);
    	rc = sqlite3_open("/var/www/FB.db", &db);
    }
 
@@ -277,7 +279,8 @@ int main(int argc, char* argv[])
 		{
 			system("/var/www/functions/updateMixed checkOn");
 			GetStation();
-			SendOrderToQueue();
+			if (foundLoc)
+				SendOrderToQueue();
 		}
 	}
 	sqlite3_close(db);
