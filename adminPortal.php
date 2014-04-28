@@ -156,7 +156,7 @@ function FreeSession()
 					<div class="header">
 						<div align="center">Create or delete drinks from the database</div><br>
 						<form id="SQLform" name="SQLform" action="SQLCommand.php" method="POST">
-							<div align="center"><input type="text" size="50" name="command" value="Custom SQL command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div>
+							<div align="center"><input type="text" size="40" name="command" value="Custom SQL Command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div>
 						</form>
 					</div>
 					<div class="container">
