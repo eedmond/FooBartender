@@ -49,6 +49,12 @@
 
 				function GenOrderString($custom, $drink)
 				{
+					if (isset($_GET['drinkAmount'])) {
+						$drinkAmount = $_GET['drinkAmount'];
+					}
+					else
+						$drinkAmount = "full";
+
 					$orderString = "functions/order ";
 					if ($custom == "true")
 					{
@@ -62,9 +68,11 @@
 							$orderString = $orderString . "\"" . $drink . "\" 35";
 						}
 					}
-					else
+					else {
 						$orderString = $orderString . "\"" . $drink . "\"";
-				
+						$orderString = $orderString .  " " . $drinkAmount;
+					}
+
 					return $orderString;
 				}
 				
@@ -103,16 +111,14 @@
 				}
 				
 				// Opened is set when the page is about to reload itself
-				if (isset($_SESSION['valid']) && $_SESSION['valid'] != '0')
+				if (isset($_SESSION['orderStatus']) && $_SESSION['orderStatus'] != 'free_to_order')
 				{
-					if (!isset($_SESSION['drinkName']))
-					{
-						$file = file("CustomDrinkNames.txt");
-						$randomDrinkName = $file[rand(0, count($file) - 1)];
-						$_SESSION['randDrinkName'] = $randomDrinkName;
-					} 
 					if ($drink == 'custom' || strstr($drink, 'Eric\'s Jamaican Surprise'))
 					{
+						if ($_SESSION['orderStatus'] == 'about_to_order') {
+							$file = file("CustomDrinkNames.txt");
+							$_SESSION['randDrinkName'] = $file[rand(0, count($file) - 1)];
+						}
 						echo '<header><h1>Thank you for ordering a ', $_SESSION['randDrinkName'], '</h1><br>';
 					}
 					else
@@ -121,13 +127,14 @@
 					}
 					
 					// Text is set when the function returns
-					if ($_SESSION['valid'] == '1')
+					if ($_SESSION['orderStatus'] == 'about_to_order')
 					{
-						$_SESSION['valid'] = '2';
+						$_SESSION['orderStatus'] = 'already_ordered';
 						$_POST = $_SESSION['post-data'];
 						$_SESSION['drinkName'] = $drink;
 						$text = exec(GenOrderString($_GET['custom'], $drink));
 						$_SESSION['text'] = $text;
+						$_SESSION['drinkAmount'] = $drinkAmount;
 					}
 					else
 					{
@@ -144,7 +151,7 @@
 						?>
 
 						<h1>Rate this drink!</h1><br>
-						<input type="number" id="rating" value="0" min="0" max="10">/10
+						<input type="number" class="number" id="rating" value="0" min="0" max="10">/10
 						<input type="button" class="button" id="rate" name="rate" value="Rate" alt="Rate">
 						
 						<script>
@@ -171,7 +178,7 @@
 				} else {
 					$_SESSION['post-data'] = $_POST;
 					$_SESSION['id'] = '1';	
-					$_SESSION['valid'] = '1';
+					$_SESSION['orderStatus'] = 'about_to_order';
 				?>
 					<header>
 						<h1>Thank you for ordering a <?php echo $drink ?></h1>
@@ -192,6 +199,6 @@
 					<p>Please place your drink on station [get station number here]</p>
 				</header>
 				<footer>
-					<a href="index.php" onclick="javascript:fadeout()" class="button scrolly">Back to FooBartender</a>
+					<a href="index.php#order" onclick="javascript:fadeout()" class="button scrolly">Back to FooBartender</a>
 				</footer>-->
 			</section>

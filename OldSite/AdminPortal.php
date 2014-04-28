@@ -1,6 +1,11 @@
 <?php include "Login.php"; ?>
 <?php include "master/master_head.php"; ?>
-<h5><a href="shutdown.php">Shut down</a></h5>
+<h5><p><button>
+<a href="http://www.webestools.com/"><img style="border:0px;" src="../images/Table.png" alt="Button" /></a>
+    <span class='image'></span>
+    <span class='text'>Click Me!</span>
+</button></p>
+<a href="shutdown.php">Shut down</a></h5>
 		<h3>Welcome to the FooBartender: Administrator Portal</h3>
 		<h2>Please Initialize The System...</h2>
 <?php

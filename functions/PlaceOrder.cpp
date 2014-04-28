@@ -19,6 +19,7 @@ int rc;
 sqlite3 *db;
 //TEMP//
 char drinkName[100];
+int drinkRatio = 1; // 2 if half, 4.5 if taste
 
 int randomize (int i) {return std::rand()%i;}
 
@@ -26,7 +27,7 @@ static int CheckOnTable(void *data, int argc, char **argv, char **azColName)
 {
 	char* drinkName = argv[0];
 	int timeToPour, currentVolume = atoi(argv[2]), station = atoi(argv[1]);
-	int volumeToPour = drinkVolumes[drinkName];
+	int volumeToPour = drinkVolumes[drinkName] / drinkRatio;
 	char sql[60];
 
 	if (station == -1)
@@ -184,9 +185,17 @@ void GetSurpriseShot(char** customOrder)
 		RandomShot, customOrder[0], NULL);
 }
 
-bool PlaceOrder(char* orderCmd, char** customOrder)
+bool PlaceOrder(char* orderCmd, char** customOrder, char* drinkAmount)
 {
 	char sql[150];
+
+	// update drink ratio based on what amount the user wanted
+	if (!strcmp(drinkAmount, "half")) {
+		drinkRatio = 2;
+	}
+	else if (!strcmp(drinkAmount, "taste")) {
+		drinkRatio = 4.5;
+	}
 
 	if (customOrder == NULL)
 	{
@@ -275,7 +284,7 @@ int main(int argc, char* argv[])
 		if (!strcmp(argv[1], "custom"))
 			customOrder = &argv[1];
 
-		if (PlaceOrder(argv[1], customOrder))
+		if (PlaceOrder(argv[1], customOrder, argv[2]))
 		{
 			system("/var/www/functions/updateMixed checkOn");
 			GetStation();

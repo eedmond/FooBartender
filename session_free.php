@@ -1,4 +1,4 @@
 <?php
 	session_start();
-	$_SESSION['valid'] = '0';
+	$_SESSION['orderStatus'] = 'free_to_order';
 ?>

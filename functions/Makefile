@@ -8,7 +8,7 @@ updateMixed: UpdateMixed.cpp
 order: PlaceOrder.cpp
 	g++ $^ $(SQL_FLAGS) -o $@
 
-upload: ProcessOrders.cpp
+upload: UploadOrders.cpp
 	g++ $^ $(SQL_FLAGS) -lwiringPi -o $@
 
 rate: RateDrink.cpp

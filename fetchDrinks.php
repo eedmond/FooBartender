@@ -57,14 +57,14 @@
 		$numRatings = $row['numRatings'];
 		$rating = $row['rating'];
 		
-		$ingredients = "\n";
+		$ingredients = "";
 		$totalProof = 0;
 		$index = 0;
 		if ($drinkType != "shot")
 		{
 			foreach ($ingred_list as $item)
 			{
-				$ingredients = $ingredients . $item . ": " . $durations[$index] . "mL\n";
+				$ingredients = $ingredients . $item . ": " . $durations[$index] . "mL<br>";
 				if ($drinkType == "mixedDrink" && $row['name'] != "Eric's Jamaican Surprise")
 				{
 					$thisProof = $db->prepare('SELECT proof FROM single WHERE name="' . $item . '"' );
@@ -80,12 +80,7 @@
 			$ingredients = "";
 		}
 		
-		if ($numRatings == 0) {
-			$totalRating = 0;
-		}
-		else {
-			$totalRating = $rating / $numRatings;
-		}
+		$totalRating = $rating / $numRatings;
 		
 		$image = strtolower($row['name']);
 		$image = preg_replace("/\s+/", '', $image);
@@ -95,17 +90,29 @@
 			$image = $defaultImage;
 
 		echo '<div class="6u">';
-		echo '<a class="image full orderIcon"  id="', $drinkType, '" name="', $row['name'], "\n";
+		#														****** If this name is changed you MUST edit *******
+		#														****** index.php submit functions            *******
+		echo '<a class="image full orderIcon"  id="', $drinkType, '" name="<h1 align=center>', $row['name'], "</h1>";
 		if ($row['name'] == "Eric's Jamaican Surprise")
-			echo "\n" . '“The mistake is thinking that there can be an antidote to the uncertainty.”' . "\n" . '― David Levithan, The Lover\'s Dictionary';
+			echo '“The mistake is thinking that there can be an antidote to the uncertainty.”' . "<br>" . '― David Levithan, The Lover\'s Dictionary';
 		else
 			echo $ingredients;
 		
 		if ($row['name'] != "Eric's Jamaican Surprise")
 		{
 			if (($drinkType == "mixedDrink" || $drinkType == "shot"))
-				echo "\nProof: " . number_format($totalProof, 1) . "\n";
-			echo "\nRating: " . number_format($totalRating, 1) . "/10";
+			{
+				if ($drinkType == "mixedDrink")
+					echo "<br>";
+				echo "Proof: " . number_format($totalProof, 0) . "<br>";
+			}
+			if ($drinkType != "shot")
+			{
+				if ($numRatings != 0)
+					echo "<br>Rating: " . number_format($totalRating, 1) . "/10";
+				else
+					echo "<br>Be the first to rate it!";
+			}
 		}
 		
 		echo '" >';

@@ -1,4 +1,3 @@
-<?php include "login_head.php"; ?>
 <!DOCTYPE HTML>
 <!--
 	Tessellate 1.0 by HTML5 UP
@@ -302,7 +301,7 @@ function submitDrink(drinkType)
 {
 	FreeSession();
 	var drinkData = $(".image.selected");
-	var mixedName = drinkData.attr('name').substring(17, drinkData.attr('name').search("</h1>"));
+	var mixedName = drinkData.attr('name').substring(0, drinkData.attr('name').search("\n"));
 	var drinkAmountSelected = document.getElementById('drinkAmount').selectedIndex;
 	var drinkAmount = "full";
 	if (drinkAmountSelected == 1) {
@@ -327,7 +326,7 @@ function submitShot()
 {
 	FreeSession();
 	var drinkData = $(".image.selected");
-	var mixedName = drinkData.attr('name').substring(17, drinkData.attr('name').search("</h1>"));
+	var mixedName = drinkData.attr('name').substring(0, drinkData.attr('name').search("\n"));
 	var orderPostFix = "";
 	if (mixedName == "Eric's Jamaican Surprise")
 		orderPostFix = "|Shot";
@@ -494,7 +493,7 @@ function submitShot()
 									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" name="vol', $count, '" style="display: inline; margin-right: 12px; margin-bottom: 5px;">';
 									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: inline"></button>';
 								} else {
-									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" name="vol', $count, '" style="display: none">';
+									echo '<input type="number" name="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" name="vol', $count, '" style="display: none">';
 									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: none"></button>';
 								}
 								if ($count % 2 == 1)
@@ -593,8 +592,7 @@ function submitShot()
 					<li><a href="https://www.facebook.com/foobartender/" class="fa fa-facebook solo"><span>Facebook</span></a></li>
 					<li><a href="About/about.html" class="fa fa-dribbble solo"><span>Dribbble</span></a></li>
 					<li><a href="http://html5up.net/" class="fa fa-github solo"><span>GitHub</span></a></li>
-					<li><a href="OldSite/AdminPortal.php" class="fa fa-gears"></a></li>
-					<li><a href="adminPortal.php" class="fa fa-headphones"></a></li>
+					<li><a href="OldSite/AdminPortal.php" class="fa fa-gears"> </a> </li>
 				</ul>
 				<div class="copyright">
 					<ul class="menu">

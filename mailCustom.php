@@ -1,13 +1,5 @@
 <?php
-	$to = "triomproductions@gmail.com";
-	$subject = $_POST["Name"] . " wants to make a new drink";
-	$subMess = $_POST["message"];
-	$message = wordwrap($subMess, 70);
-	$headers = "From: bartender@foobartender.local\n"; 
-	if (!mail('triomproductions@gmail.com', 'hello', 'Yo'))
-		echo "<script type='text/javascript'>alert('NEWP');</script>";
-	else
-		echo "<script type='text/javascript'>alert('" . $message . "');</script>";
+	exec("python functions/send_mail.py \"New message from " . addslashes($_POST["Name"]) . "\" \"" . addslashes($_POST["message"]) . "\n\nReply to " . addslashes($_POST["Email"]) . "\"");
 ?>
 <html>
 	<head>
@@ -40,7 +32,7 @@
 		}
 	</script>
 			<section id = "header" class="dark">
-				<h3>Thank you for submitting your custom drink. We will get back to you on that.</h3>
+				<h3>Thank you for your feedback you awesome, beautiful person.</h3>
 				<footer>
 					<a href="index.php#order" onclick="javascript:fadeout()" class="button scrolly">Back to FooBartender</a>
 				</footer>
