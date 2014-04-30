@@ -167,7 +167,8 @@ void GetStation ()
 	strcpy(sql, "UPDATE stations SET amount=amount+1 WHERE station=");
 	strcat(sql, std::to_string(stations.front()).c_str());
 
-	printf("Placing your %s on station %i\n", drinkName, stations.front());
+	printf("Placing your order on station %i\n", stations.front());
+	//OLD VERSION//printf("Placing your %s on station %i\n", drinkName, stations.front());
 
 	rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
 }

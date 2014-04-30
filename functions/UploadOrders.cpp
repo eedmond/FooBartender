@@ -52,18 +52,18 @@ int main(int argc, char* argv[])
    while (1)
 	{
 		int incoming;
-		printf("waiting for start commands from arduino\n");
+		//printf("waiting for start commands from arduino\n");
 		while(serialDataAvail(fd) < 2);
 
-		if (incoming = serialGetchar(fd) != '~') { printf("%i", incoming); continue;}
-		if (incoming = serialGetchar(fd) != '^') { printf("%i", incoming); continue;}
+		if (incoming = serialGetchar(fd) != '~') { /*printf("%i", incoming);*/ continue;}
+		if (incoming = serialGetchar(fd) != '^') { /*printf("%i", incoming);*/ continue;}
 		break;
 	}
-	printf("received start commands from arduino\n");
+	//printf("received start commands from arduino\n");
 	serialFlush(fd);
 
 	//send startup sequence back to the arduino
-	printf("sending ~^\n");
+	//printf("sending ~^\n");
 	serialPuts(fd, "~^");
 
 	WaitForInterrupts();
@@ -112,7 +112,7 @@ void UploadOrders ()
 	CreateSelectString(initialContacts);
 	PullOrdersFromQueue();
 	SendCmdsToArduino();
-printf("sednging: ~f\n"); //TEMP
+//printf("sending: ~f\n"); //TEMP
 	serialPuts(fd, "~f");
 	ClearVolCommands();
 	RefreshDatabase();
@@ -133,16 +133,16 @@ printf("sednging: ~f\n"); //TEMP
 
 void ReceiveInitialContacts(vector<int>& contacts)
 {	
-	printf("Waiting for contact data from Arduino\n");
+	//printf("Waiting for contact data from Arduino\n");
 	while (serialDataAvail(fd) < 8);
 	
 	for (int i = 0; i < 8; ++i) {
 		contacts.push_back(serialGetchar(fd));
-	printf("%i, ", contacts[i]);
+	//printf("%i, ", contacts[i]);
 	}
-	printf("\n");//TEMP//
+	//printf("\n");//TEMP//
 		
-	printf("Contact information received\n");
+	//printf("Contact information received\n");
 }
 
 void PullStationVolumes()
@@ -182,7 +182,7 @@ void PullOrdersFromQueue()
 
 	strcpy(sql, "SELECT * FROM queue");
 	strcat(sql, sqlPostFix);
-	printf("running: %s\n", sql);
+	//printf("running: %s\n", sql);
 	rc = sqlite3_exec(db, sql, FormatOrders, NULL, &zErrMsg);
 	if( rc != SQLITE_OK )
 	{
@@ -217,7 +217,7 @@ void SendCmdsToArduino()
 		
 		if (cmd.find_first_not_of("0", 3) == string::npos) continue;
 		
-		printf("sending: %s\n", cmd.c_str());
+		//printf("sending: %s\n", cmd.c_str());
 		serialPuts(fd, cmd.c_str());
 
 		UpdateVolumes(station);

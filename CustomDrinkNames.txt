@@ -12,8 +12,55 @@ Godlike Purgatory Shot
 Bananas in Pajamas
 Peanut Butter and Jelly Sandwich
 Pan Galactic Gargle Blaster
+Aging Potion
+Alihotsy Draught
+Angel's Trumpet Draught
+Antidote to Common Poisons
+Antidote to Uncommon Poisons
+Antidote to Veritaserum
+Armadillo Bile Mixture
+Babbling Beverage
+Baneberry Potion
+Baruffio's Brain Elixir
+Beautification Potion
+Befuddlement Draught
+Beguiling Bubbles
+Black Fire Potion
+Blemish Blitzer
+Caxambu Style Borborygmus Potion
+Cheese-Based Potion
+Confusing Concoction
+Cough Potion
+Cupid Crystals
+Dogbane Potion
+Frankincense and Myrrh
+Maximum Turbo Farts Potion
+Peach Iced Tea... You're gonna hate it
+Doxycide
+Dr. Ubbly's Oblivious Unction
+Dragon Poison
+Dragon Dung Fertiliser
+Dreamless Sleep Potion
+Elixir of Life
+Essence of Insanity
+Flesh-Eating Slug Repellent
+Frog Parts Mixture
+Invisibility Potion
+Kissing Concoction
+Laxative Potion
 Papa John's Garlic Sauce
 John Daly
+Kool-Aid
+Red Bull
+Carrot Juice
+Bubble Tea
+Egg Nog
+Hot Chocolate with Marshmallows
+Slimfast
+Gefilte Fish
+Toothpaste
+Hemorroid Cream
+Liquid Nitrogen
 Hot Dog Water
 Boss Sauce
 Stawberry Yum-Yum
@@ -131,7 +178,6 @@ Indefinite Western Whip
 Intoxicated Snot
 Milk Cave
 Negative Plum Trap
-Obsidian Teacher
 Obvious Traveler's Gauntlet
 Strawberry Tart Float
 Strength Imagination
@@ -173,9 +219,7 @@ Melon Lightning
 Peppermint Apple Armageddon
 Pleasant Shake
 Serf's Spring
-Unholy Noble
 Walnut Sour Winter
-Wine Cocktail
 Absolute Special Voice
 Amazing Raspberry Punch
 Ancient Beastmaster's Trap
@@ -189,7 +233,6 @@ High Delight Squirt
 Indefinite Crazy Dutchy
 Indefinite High Tornado
 Low Narrow Slap
-Mint Past
 Obvious Schnapps Mix
 Peanut Nectarine Shake
 Random Apple Shot
@@ -220,17 +263,13 @@ Ancient Deathly Midwife
 Astounding Walnut World
 Big Dutchy
 Decadent Ecstacy
-Demonologist's Diamond
 Dirt Scream
 Indefinite Abundance Lightning
-Larger Martini
 Melon Dishonor
 Modest Bourbon Draught
 Noble's Honor
 Ocean Bodyguard
-Ochre Light
 Pharmacist's Planet
-Pleasant Short
 Scotch Shot
 Scotchy Scotch Scotch
 Tart Cocoa Madness

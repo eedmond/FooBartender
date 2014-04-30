@@ -20,7 +20,7 @@ static int CheckOnTable(void *data, int argc, char **argv, char **azColName)
         int curVolume = atoi(argv[1]);
         int volumeToPour = drinkVolumes[drinkName];
 
-	printf("We want %i, we have %i for %s\n", volumeToPour, curVolume, argv[0]);
+	//printf("We want %i, we have %i for %s\n", volumeToPour, curVolume, argv[0]);
 
         if (curVolume < volumeToPour)
 		{
@@ -47,7 +47,7 @@ static int ParseSingle(void *data, int argc, char **argv, char **azColName)
 		singleIng = strtok(NULL, "|");
 	}
 
-	printf("For %s: ", argv[nameIndex]);
+	//printf("For %s: ", argv[nameIndex]);
         volume = strtok(argv[volumeIndex], "|");
         strcpy(sql, "SELECT name, volume FROM single WHERE name=\"");
 
@@ -79,7 +79,7 @@ static int ParseSingle(void *data, int argc, char **argv, char **azColName)
             strcpy(sql2, "UPDATE mixed SET isOnTable=0 WHERE name=\"");
             strcat(sql2, argv[nameIndex]);
 			strcat(sql2, "\";");
-		printf("%s\n", sql2);
+		//("%s\n", sql2);
             sqlite3_exec(db, sql2, NULL, NULL, &zErrMsg);
         }
 		else if ((bool) data && rc == SQLITE_OK && !strcmp(argv[onTableIndex] , "0"))
@@ -88,7 +88,7 @@ static int ParseSingle(void *data, int argc, char **argv, char **azColName)
             strcpy(sql2, "UPDATE mixed SET isOnTable=1 WHERE name=\"");
             strcat(sql2, argv[nameIndex]);
 			strcat(sql2, "\";");
-		printf("%s\n", sql2);
+		//printf("%s\n", sql2);
             sqlite3_exec(db, sql2, NULL, NULL, &zErrMsg);
         }
 

@@ -34,7 +34,7 @@
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 	</head>
 				<ul id="NavTool" class="navbar">
-					<li><a href="#TableSetup" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"><span>Twitter</span></a></li>
+					<li><a href="#TableSetup" class="scrolly fa solo"><img src="images/Categories/Tablethumb.png" alt="Mixed Image"><span>Twitter</span></a></li>
 					<li><a href="#ManageDrinks" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"><span>Facebook</span></a></li>
 					<li><a href="#ManageQueue" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"><span>Google+</span></a></li>
 					<li><a href="#ManageErrors" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"><span>Dribbble</span></a></li>
@@ -53,7 +53,7 @@
 						<div class="row">
 							<div class="6u">
 								<section>
-									<img src="images/Categories/mixeddrink.png" alt="Mixed Drink Image" width=150 height=150>
+									<img src="images/Categories/Tablethumb.png" alt="Mixed Drink Image" width=150 height=150>
 									<header>
 										<h3><a href="#TableSetup" class="button scrolly">Table Setup</a></h3>
 									</header>
@@ -62,7 +62,7 @@
 							</div>
 							<div class="6u">
 								<section>
-									<img src="images/Categories/shot.png" alt="Shot Image" width=150 height=150>
+									<img src="images/Categories/nonalcoholic.png" alt="Shot Image" width=150 height=150>
 									<header>
 										<h3><a href="#ManageDrinks" class="button scrolly">Manage Drinks</a></h3>
 									</header>
@@ -74,7 +74,7 @@
 							<div class="row">
 							<div class="6u">
 								<section>
-									<img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image" width=175 height=175>
+									<img src="images/Categories/Queue.png" alt="Non-Alcoholic Image" width=175 height=175>
 									<header>
 										<h3><a href="#ManageQueue" class="button scrolly">Manage Queue</a></h3>
 									</header>
@@ -82,7 +82,7 @@
 							</div><br>
 							<div class="6u">
 								<section>
-									<img src="images/Categories/customdrink.png" alt="Custom Drink" width=150 height=150>
+									<img src="images/Categories/error.png" alt="Custom Drink" width=150 height=150>
 									<header>
 										<h3><a href="#ManageErrors" class="button scrolly">Manage Errors</a></h3>
 									</header>
@@ -119,6 +119,34 @@ function FreeSession()
 	xmlhttp.send();
 }
 
+var customCounter = 0;
+function onPlusClick() {
+	customCounter = customCounter + 1;
+	var textID = "text" + customCounter;
+	var partsID = "parts" + customCounter;
+	var plusID = "plus" + customCounter;
+	var prevPlusID = "plus" + (customCounter - 1);
+	var textDOM = document.getElementsByName(textID)[0];
+	var partsDOM = document.getElementsByName(partsID)[0];
+	var plusDOM = document.getElementsByName(plusID)[0];
+	var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
+	$(textDOM).fadeTo("slow", 1);
+	$(partsDOM).fadeTo("slow", 1);
+	$(plusDOM).fadeIn("slow");
+}
+
+function onClearClick() {
+	while (customCounter > 0) {
+		var textID = "text" + customCounter;
+		var partsID = "parts" + customCounter;
+		var plusID = "plus" + customCounter;
+		document.getElementsByName(textID)[0].style.display="none";
+		document.getElementsByName(partsID)[0].style.display="none";
+		document.getElementsByName(plusID)[0].style.display="none";
+		customCounter = customCounter - 1;
+	}
+	document.getElementsByName("plus0")[0].style.display="inline";
+}
 
 </script>
 		<!-- Table Setup -->
@@ -156,10 +184,52 @@ function FreeSession()
 					<div class="header">
 						<div align="center">Create or delete drinks from the database</div><br>
 						<form id="SQLform" name="SQLform" action="SQLCommand.php" method="POST">
-							<div align="center"><input type="text" size="40" name="command" value="Custom SQL Command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div>
+							<div align="center"><input type="text" size="40" name="command" value="Custom SQL Command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div><br>
 						</form>
 					</div>
-					<div class="container">
+					<div class="container small">
+						<form id="newDrinkForm" method="POST" action="insertMixed.php">
+							<div class="row">
+								<div class="12u" align="center">
+									<ul class="actions">
+										<li><input type="text" id="drinkName" class="button" name="drinkName" size="10" value="Drink Name"/></li>
+										<li><input type="submit" class="button" value="Submit Drink"/></li>
+										<li><input type="reset" class="button alt" value="Clear Order" onclick="javascript:onClearClick();" /></li>
+									</ul>
+								</div>
+							</div>
+						<?php
+							$db = new PDO('sqlite:FB.db');
+							$getNames = $db->query("SELECT * FROM single WHERE station > -1 ORDER BY name ASC");
+							$queryResult = $getNames->fetchAll();
+	
+							for ($count = 0; $count < 16; $count++)
+							{
+								if ($count == 0) {
+									echo '<select id="text', $count, '" name="text', $count, '" style="display: inline">Ingredient<option value=0>Add Drink</option>';
+								} else {
+									echo '<select id="text', $count, '" name="text', $count, '" style="display: none">Ingredient<option value=0>Add Drink</option>';
+								}
+								foreach ($queryResult as $row)
+								{
+									$drinkName = $row['name'];
+									echo '<option value="', $drinkName, '">', $row['name'], '</option>';
+								}
+								echo '</select>';
+
+								if ($count == 0) {
+									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: inline; margin-right: 12px; margin-bottom: 5px;">';
+									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: inline"></button>';
+								} else {
+									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: none; margin-right: 12px; margin-bottom: 5px">';
+									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: none"></button>';
+								}
+								if ($count % 2 == 1)
+									echo '<br>';
+							}
+						unset($db);
+						?>
+						</form>
 						<div class="row">
 							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
 								<li><a href="#TableSetup" class="scrolly fa solo"><img src="images/Categories/mixeddrink.png" alt="Mixed Image"></a></li>
