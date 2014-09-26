@@ -1,6 +1,7 @@
 <?php
 	//TODO: include Doctrine here
-
+	require_once "../vendor/autoload.php";
+	
 	/***
 	Creates a connection to the database.
 	Common uses:
@@ -35,6 +36,12 @@
 			->execute()
 			->fetchAll();
 		
+		Where EX (incomplete):
+		->where(
+			$database->GetExpression()
+				->eq('name','?'))
+		->setParameter(0, $item)
+		
 	***/
 	class Database
 	{
@@ -50,9 +57,10 @@
 		{
 			$config = new \Doctrine\DBAL\Configuration();
 			$connectionParams = array(
-				/*'user' => 'pi',
-				'password' => '1335e',*/
-				'path' => '/var/www/FB.db'
+				'user' => 'pi',
+				'password' => '1335e',
+				'path' => '/var/www/FB.db',
+				'driver' => 'pdo_sqlite',
 			);
 			$this->connection = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 		}
@@ -64,10 +72,7 @@
 		
 		public function StartQuery()
 		{
-			if ( ! $this->query == NULL)
-			{
-				$this->query = $this->connection->createQueryBuilder();
-			}
+			$this->query = $this->connection->createQueryBuilder();
 			
 			return $this->query;
 		}

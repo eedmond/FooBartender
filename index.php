@@ -124,7 +124,7 @@ $(document).ready(function(){
 
 $.ajax(
 {
-    url: 'fetchDrinks.php',
+    url: 'Orders/fetchDrinks.php',
    type: 'post',
    data: { "drinkType": "mixedDrink"},
   success: function(data) {
@@ -136,7 +136,7 @@ $.ajax(
 
 $.ajax(
 {
-    url: 'fetchDrinks.php',
+    url: 'Orders/fetchDrinks.php',
    type: 'post',
    data: { "drinkType": "shot"},
   success: function(data) {
@@ -148,7 +148,7 @@ $.ajax(
 
 $.ajax(
 {
-    url: 'fetchDrinks.php',
+    url: 'Orders/fetchDrinks.php',
    type: 'post',
    data: { "drinkType": "nonAlcoholic"},
   success: function(data) {

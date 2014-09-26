@@ -1,27 +1,38 @@
 <?php
-        $db = new PDO('sqlite:FB.db');
-
+	require_once "../Utilities/Database.php";
+	
+	$database = new Database();
+			
 	$drinkType = $_POST['drinkType'];
 	$defaultImage = "mixeddefault";
-	$query = "";
+	$query = $database->StartQuery();
 
 	if ($drinkType == "mixedDrink")
 	{
 		$defaultImage = "mixeddefault";
-		$query = "SELECT * FROM mixed WHERE proof > 0 ORDER BY rating / numRatings DESC";
+		$query->select('*')
+			->from(Database::MixedTable)
+			->where('proof > 0')
+			->orderBy('rating / numRatings', 'DESC');
 	}
 	else if ($drinkType == "nonAlcoholic")
 	{
 		$defaultImage = "nonalcoholicdefault";
-		$query = "SELECT * FROM mixed WHERE proof = 0 ORDER BY rating / numRatings DESC";
+		$query->select('*')
+			->from(Database::MixedTable)
+			->where('proof = 0')
+			->orderBy('rating / numRatings', 'DESC');
 	}
 	else if ($drinkType == "shot")
 	{
 		$defaultImage = "shotdefault";
-		$query = "SELECT * FROM single WHERE station > -1 AND proof > 25 AND volume > 34";
+		$query->select('*')
+			->from(Database::SingleTable)
+			->where('proof > 25')
+			->andwhere('volume > 34');
 	}
 
-	$getNames = $db->query($query);
+	$getNames = $query->execute();
 	$queryResult = $getNames->fetchAll();
 	
 	$surprise = [
@@ -67,9 +78,13 @@
 				$ingredients = $ingredients . $item . ": " . $durations[$index] . "mL<br>";
 				if ($drinkType == "mixedDrink" && $row['name'] != "Eric's Jamaican Surprise")
 				{
-					$thisProof = $db->prepare('SELECT proof FROM single WHERE name="' . $item . '"' );
-					$thisProof->execute();
-					$totalProof += $thisProof->fetchColumn()*$durations[$index]/175;
+					$thisProof = $database->StartQuery()
+						->select('proof')
+						->from(Database::SingleTable)
+						->where('name="' . $item . '"' )
+						->execute()
+						->fetchColumn();
+					$totalProof += $thisProof*$durations[$index]/175;
 				}
 				$index++;
 			}
@@ -86,7 +101,7 @@
 		$image = preg_replace("/\s+/", '', $image);
 		$image = preg_replace("/'/", '', $image);
 
-		if (!file_exists("images/Drinks/" . $image . ".jpg"))
+		if (!file_exists("../images/Drinks/" . $image . ".jpg"))
 			$image = $defaultImage;
 
 		echo '<div class="6u">';
@@ -117,7 +132,7 @@
 		
 		echo '" >';
 			
-		echo '<img src="images/Drinks/', $image, '.jpg" alt="FixThis" />';
+		echo '<img src="../images/Drinks/', $image, '.jpg" alt="FixThis" />';
 		echo '</a>';
 		echo '</div>';
 		
