@@ -55,7 +55,7 @@
 					else
 						$drinkAmount = "full";
 
-					$orderString = "functions/order ";
+					$orderString = "../Utilities/order ";
 					if ($custom == "true")
 					{
 						$orderString = $orderString . "custom ";

@@ -1,5 +1,5 @@
 <?php
-	require_once "../Utilities/Database.php";
+	require_once(dirname(__FILE__).'/../Utilities/Database.php');
 	
 	$database = new Database();
 			
@@ -39,7 +39,7 @@
 		"name" => "Eric's Jamaican Surprise",
 		"isOnTable" => "1",
 	];
-		
+
 	array_push($queryResult, $surprise);
 	
 	$i = 0;

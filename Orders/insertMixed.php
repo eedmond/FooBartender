@@ -1,9 +1,16 @@
 <?php
-	$db = new PDO('sqlite:FB.db');
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+	require_once(dirname(__FILE__) . '/../Utilities/Database.php');
+	
+	$database = new Database();
+	
+	//$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
-	$query = "SELECT * FROM mixed WHERE name=\"" . $_POST['drinkName'] . "\"";
-	$result = $db->query($query);
+	$result = $database->StartQuery()
+		->select('*')
+		->from(Database::Mixed)
+		->where('name = "' . $_POST['drinkName'] .'"')
+		->execute();
+
 	if ($result->fetch(PDO::FETCH_NUM) != 0)
 	{
 		echo "<script type='text/javascript'>";
