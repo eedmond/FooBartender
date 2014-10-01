@@ -279,7 +279,8 @@ these can both be changed
 		{
 			//SELECT station FROM stations WHERE amount=0 ORDER BY Random() LIMIT 1
 			$queryResult = $database->StartQuery()
-				->select(Database::StationsTable)
+				->select('station')
+				->from(Database::StationsTable)
 				->where('amount = 0')
 				->orderBy('Random()')
 				->setMaxResults(1)
