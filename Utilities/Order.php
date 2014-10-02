@@ -41,9 +41,14 @@ these can both be changed
 		const Custom = "Custom";
 		const Shot = "Shot";
 		
-		function __construct()
+		public function __construct()
 		{
 			$database = new Database();
+		}
+		
+		public function __construct($inputDatabase)
+		{
+			$database = $inputDatabase;
 		}
 		
 		public function Mixed()
