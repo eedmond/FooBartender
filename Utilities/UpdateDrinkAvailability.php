@@ -14,7 +14,7 @@
 			$database = new Database();
 		}
 		
-		function __construct($inDatabase)
+		function __construct(&$inDatabase)
 		{
 			$database = $inDatabase;
 		}
@@ -54,7 +54,7 @@
 			return $drinkQuery;
 		}
 		
-		private function CheckEachDrinkFromQuery($drinkQuery)
+		private function CheckEachDrinkFromQuery(&$drinkQuery)
 		{
 			foreach ($drinkQuery as $row)
 			{
@@ -79,7 +79,7 @@
 			}
 		}
 		
-		private function VerifyDrinkAvailability($row)
+		private function VerifyDrinkAvailability(&$row)
 		{
 			$componentNames = explode('|', $row['ingredients');
 			$volumeArray = explode('|', $row['volume']);
@@ -128,7 +128,7 @@
 			}
 		}
 		
-		private function SetAvailability($name, $availability)
+		private function SetAvailability(&$name, &$availability)
 		{
 			$database->StartQuery()
 				->update(Database::MixedTable)

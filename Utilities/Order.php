@@ -46,7 +46,7 @@ these can both be changed
 			$database = new Database();
 		}
 		
-		public function __construct($inputDatabase)
+		public function __construct(&$inputDatabase)
 		{
 			$database = $inputDatabase;
 		}
@@ -66,12 +66,12 @@ these can both be changed
 			$orderState = Order::Shot;
 		}
 		
-		public function Name($input)
+		public function Name(const &$input)
 		{
 			$drinkName = $input;
 		}
 		
-		public function SetOrderData($inputMap)
+		public function SetOrderData(const &$inputMap)
 		{
 			$namesToVolumesMap = $inputMap;
 		}
@@ -173,7 +173,7 @@ these can both be changed
 			CreateMapFromQuery($queryResult);
 		}
 		
-		private function CreateMapFromQuery($queryResult)
+		private function CreateMapFromQuery(&$queryResult)
 		{
 			$componentList = $queryResult[0]['ingredients'];
 			$componentListArray = explode('|', $componentList);
@@ -263,7 +263,7 @@ these can both be changed
 			RemoveOrderFromTable($queryResults);
 		}
 		
-		private function RemoveOrderFromTable($queryResults)
+		private function RemoveOrderFromTable(&$queryResults)
 		{
 			//UPDATE single SET volume=volume-{volumeToPour} WHERE station={station}
 			foreach ($queryResults as $row)
@@ -303,7 +303,7 @@ these can both be changed
 			return $openStation;
 		}
 		
-		private function OccupyStation($openStation)
+		private function OccupyStation(&$openStation)
 		{
 			//UPDATE stations SET amount=amount+1 WHERE station={station}
 			$database->StartQuery()
@@ -316,8 +316,7 @@ these can both be changed
 		private function PlaceInQueue($station)
 		{
 			//INSERT INTO queue (orderString, station) values("~", "station")
-			$orderStringBuilder = new OrderStringBuilder($namesToVolumesMap, $database);
-			$orderString = $orderStringBuilder->GetOrderString();
+			$orderString = BuildOrderString($namesToVolumesMap, $database);
 			
 			$database->StartQuery()
 				->insert(Database::QueueTable)
