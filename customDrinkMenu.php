@@ -3,7 +3,6 @@
 
 	const NUMB_INGREDIENTS_MAX = 16;
 	
-	
 	$database = new Database();
 
 	$queryResult = $database->StartQuery()
@@ -14,7 +13,7 @@
 			->execute()
 			->fetchAll();
 
-	for ($count = 0; $count < $NUMB_INGREDIENTS_MAX; $count++)
+	for ($count = 0; $count < NUMB_INGREDIENTS_MAX; $count++)
 	{
 		if ($count == 0)
 		{

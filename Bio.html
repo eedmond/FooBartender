@@ -302,7 +302,7 @@ function submitDrink(drinkType)
 			orderPostFix = "|Non-Alcoholic";
 	}
 	$("body").fadeOut(1000);
-	location.href = "newOrder.php?custom=false&drinkName=" + mixedName + orderPostFix;
+	location.href = "Orders/newOrder.php?custom=false&drinkName=" + mixedName + orderPostFix;
 }
 
 function submitShot()
@@ -313,7 +313,7 @@ function submitShot()
 		orderPostFix = "|Shot";
 		
 	$("body").fadeOut(1000);
-	location.href = "newOrder.php?custom=true&drinkName=" + mixedName.attr('name') + orderPostFix;
+	location.href = "Orders/newOrder.php?custom=true&drinkName=" + mixedName.attr('name') + orderPostFix;
 }
 
 </script>
@@ -442,7 +442,7 @@ function submitShot()
    				<div align="center">All the power you could ever ask for is right at your finger tips</div><br>
 				</div>
 				<div class="container small">
-					<form id="customForm" method="post" action="newOrder.php?custom=true&drinkname=custom">
+					<form id="customForm" method="post" action="Orders/newOrder.php?custom=true&drinkname=custom">
 							<div class="row">
 								<div class="12u" align="center">
 									<ul class="actions">

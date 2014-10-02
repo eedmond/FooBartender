@@ -215,7 +215,7 @@ function submitDrink(drinkType)
 		}
 	}
 	$("body").fadeOut(1000);
-	location.href = "newOrder.php?custom=false&drinkName=" + mixedName + orderPostFix + "&drinkAmount=" + drinkAmount;
+	location.href = "Orders/newOrder.php?custom=false&drinkName=" + mixedName + orderPostFix + "&drinkAmount=" + drinkAmount;
 }
 
 function submitShot()
@@ -228,7 +228,7 @@ function submitShot()
 		orderPostFix = "|Shot";
 		
 	$("body").fadeOut(1000);
-	location.href = "newOrder.php?custom=true&drinkName=" + mixedName + orderPostFix;
+	location.href = "Orders/newOrder.php?custom=true&drinkName=" + mixedName + orderPostFix;
 }
 
 // Custom Drink JS
