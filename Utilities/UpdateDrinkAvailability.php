@@ -7,66 +7,65 @@
 		private $drinkQuery;
 		private $ingredientsSeenList = array();
 		
-		const VOLUME_NOT_SET == -100;
+		const VOLUME_NOT_SET = -100;
 		
-		function __construct()
+		function __construct($inDatabase = NULL)
 		{
-			$database = new Database();
-		}
-		
-		function __construct(&$inDatabase)
-		{
-			$database = $inDatabase;
+			if (!$inDatabase)
+			{
+				$inDatabase = new Database();
+			}
+			
+			$this->database = $inDatabase;
 		}
 		
 		public function UpdateAvailableDrinks()
 		{
-			$drinkQuery = QueryAvailableDrinks();
-			CheckEachDrinkFromQuery($drinkQuery);
+			$this->drinkQuery = $this->QueryAvailableDrinks();
+			$this->CheckEachDrinkFromQuery();
 		}
 		
 		public function UpdateAllDrinks()
 		{
-			$drinkQuery = QueryAllDrinks();
-			CheckEachDrinkFromQuery($drinkQuery);
+			$this->drinkQuery = $this->QueryAllDrinks();
+			$this->CheckEachDrinkFromQuery();
 		}
 		
 		private function QueryAllDrinks()
 		{
-			$drinkQuery = $database->StartQuery()
+			$this->drinkQuery = $this->database->StartQuery()
 				->select('name', 'ingredients', 'volume', 'isOnTable')
-				->from(Database::MixedTable)
+				->from(Database::MixedTable, 'u')
 				->execute()
 				->fetchAll();
 			
-			return $drinkQuery;
+			return $this->drinkQuery;
 		}
 		
 		private function QueryAvailableDrinks()
 		{
-			$drinkQuery = $database->StartQuery()
+			$this->drinkQuery = $this->database->StartQuery()
 				->select('name', 'ingredients', 'volume', 'isOnTable')
-				->from(Database::MixedTable)
+				->from(Database::MixedTable, 'u')
 				->where('isOnTable > 0')
 				->execute()
 				->fetchAll();
 			
-			return $drinkQuery;
+			return $this->drinkQuery;
 		}
 		
-		private function CheckEachDrinkFromQuery(&$drinkQuery)
+		private function CheckEachDrinkFromQuery()
 		{
-			foreach ($drinkQuery as $row)
+			foreach ($this->drinkQuery as $row)
 			{
 				$previousAvailability = $row['isOnTable'];
 				$actualAvailability = $previousAvailability;
 				
-				try
+				if ($this->IsDrinkAvailable($row))
 				{
-					VerifyDrinkAvailable($row);
 					$actualAvailability = 1;
 				}
-				catch (Exception $e)
+				else
 				{
 					$actualAvailability = 0;
 				}
@@ -74,65 +73,83 @@
 				if ($actualAvailability != $previousAvailability)
 				{
 					$name = $row['name'];
-					SetAvailability($name, $actualAvailability);
+					$this->SetAvailability($name, $actualAvailability);
 				}
 			}
 		}
 		
-		private function VerifyDrinkAvailability(&$row)
+		private function IsDrinkAvailable($row)
 		{
-			$componentNames = explode('|', $row['ingredients');
+			$componentNames = explode('|', $row['ingredients']);
+			$componentNames = array_filter($componentNames);
 			$volumeArray = explode('|', $row['volume']);
+			$volumeArray = array_filter($volumeArray);
 			
 			$namesToVolumeMap = array_combine($componentNames, $volumeArray);
 			
-			$queryBuilder = $database->StartQuery()
-				->select('name', 'volume')
-				->from(Database::SingleTable)
-				->where('false');
+			$queryBuilder = $this->database->StartQuery()
+				->select('name', 'volume', 'station')
+				->from(Database::SingleTable, 'u');
 			
+			$makeQuery = false;
 			foreach ($componentNames as $name)
 			{
-				if (isset($ingredientsSeenList[$name]))
+				if (isset($this->ingredientsSeenList[$name]))
 				{
-					if ($ingredientsSeenList[$name] < $namesToVolumeMap[$ingredientName])
+					if ($this->ingredientsSeenList[$name] < $namesToVolumeMap[$name])
 					{
-						throw new Exception();
+						return false;
 					}
 				}
 				else
 				{
-					$ingredientsSeenList[$name] = self::VOLUME_NOT_SET;
-					$queryBuilder->orWhere("name = $name");
+					$makeQuery = true;
+					$queryBuilder->orWhere("name = \"$name\"");
 				}
+			}
+			
+			if (!$makeQuery)
+			{
+				return;
 			}
 			
 			$queryResult = $queryBuilder->execute()
 				->fetchAll();
 			
+			$drinkAvailable = true;
 			foreach ($queryResult as $ingredientRow)
 			{
-				$ingredientName = $ingredientRow['name'];
 				$currentVolume = $ingredientRow['volume'];
+				$station = $ingredientRow['station'];
+				if ($station < 0)
+				{
+					$currentVolume = 0;
+				}
+				$this->ingredientsSeenList[$name] = $currentVolume;
+				
+				if (!$drinkAvailable)
+				{
+					continue;
+				}
+				
+				$ingredientName = $ingredientRow['name'];
 				$desiredVolume = $namesToVolumeMap[$ingredientName];
 				
-				if ($ingredientsSeenList[$name] == self::VOLUME_NOT_SET)
+				if ($currentVolume < $desiredVolume)
 				{
-					$ingredientsSeenList[$name] = $currentVolume;
-				}
-				
-				if (currentVolume < desiredVolume)
-				{
-					throw new Exception();
+					$drinkAvailable = false;
 				}
 			}
+			
+			return $drinkAvailable;
 		}
 		
-		private function SetAvailability(&$name, &$availability)
+		private function SetAvailability($name, $availability)
 		{
-			$database->StartQuery()
+			$this->database->StartQuery()
 				->update(Database::MixedTable)
-				->set('isOnTable', 0)
+				->set('isOnTable', $availability)
+				->where("name=\"$name\"")
 				->execute();
 		}
 	}

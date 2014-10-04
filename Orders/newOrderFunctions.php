@@ -77,8 +77,6 @@
 				->SetOrderData($namesToVolumesMap);
 		}
 		
-		echo '<h1>This is drinkName here: ' . $drinkName . '</h1>';
-		
 		$resultString = $order->Place();
 		
 		return $resultString;

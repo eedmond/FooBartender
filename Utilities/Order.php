@@ -28,6 +28,7 @@ these can both be changed
 
 	require_once(dirname(__FILE__).'/Database.php');
 	require_once(dirname(__FILE__).'/OrderStringBuilder.php');
+	require_once(dirname(__FILE__).'/UpdateDrinkAvailability.php');
 
 	class Order
 	{
@@ -96,6 +97,8 @@ these can both be changed
 				//Mutex::unlock($this->grabStationLock);
 				$this->PlaceInQueue($station);
 				$this->resultString = "Your order has been placed on station $station";
+				$updater = new UpdateDrinkAvailability();
+				$updater->UpdateAvailableDrinks();
 			}
 			catch (Exception $e)
 			{
@@ -190,9 +193,11 @@ these can both be changed
 		{
 			$componentList = $queryResult[0]['ingredients'];
 			$componentListArray = explode('|', $componentList);
+			$componentListArray = array_filter($componentListArray);
 			
 			$volumeList = $queryResult[0]['volume'];
 			$volumeListArray = explode('|', $volumeList);
+			$volumeListArray = array_filter($volumeListArray);
 			
 			$this->namesToVolumesMap = array_combine($componentListArray, $volumeListArray);
 		}
@@ -304,8 +309,7 @@ these can both be changed
 				->execute()
 				->fetchColumn();
 			
-			throw new Exception(print_r($queryResult, true);
-			if (!$queryResult)
+			if ($queryResult === false)
 			{
 				throw new Exception('Queue is currently full.');
 			}
