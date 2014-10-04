@@ -1,32 +1,30 @@
 <?php
 
 	require_once(dirname(__FILE__).'/Database.php');
-
-	function BuildOrderString($namesToVolumesMap)
-	{
-		$database = new Database();
-		return BuildOrderString($namesToVolumesMap, $database);
-	}
 	
-	function BuildOrderString($namesToVolumesMap, $database)
+	function BuildOrderString($namesToVolumesMap, $database = NULL)
 	{
+		if (!$database)
+		{
+			$database = new Database();
+		}
+		
 		$volumesArray = array_fill(0, 16, 0);
 		
 		$queryBuilder = $database->StartQuery()
 			->select('name', 'station')
-			->from(Database::SingleTable)
-			->where('false');
+			->from(Database::SingleTable, 'u');
 		
-		foreach ($namesToVolumesMap as $name)
+		foreach ($namesToVolumesMap as $name => $volume)
 		{
-			$queryBuilder->orWhere("name = $name");
+			$queryBuilder->orWhere("name = \"$name\"");
 		}
 		
 		$queryResult = $queryBuilder->execute();
 		
 		foreach ($queryResult as $row)
 		{
-			$componentNames = $row['name'];
+			$componentName = $row['name'];
 			$station = $row['station'];
 			$volumeToPour = $namesToVolumesMap[$componentName];
 			

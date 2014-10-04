@@ -183,7 +183,7 @@ function ClickFunction(type, element)
 function FreeSession()
 {
     xmlhttp=new XMLHttpRequest();
-	xmlhttp.open("GET", "session_free.php", false);
+	xmlhttp.open("GET", "Utilities/session_free.php", false);
 	xmlhttp.send();
 }
 

@@ -5,6 +5,9 @@
 	//	3. Returns the result in both cases
 	function GetOrderResult()
 	{
+		$drinkType = $_GET['orderType'];
+		$drinkName = $_GET['drinkName'];
+	
 		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
 		{
 			if ($_SESSION['orderStatus'] == 'about_to_order')
@@ -14,12 +17,15 @@
 			}
 		}
 		
+		$text = '';
+		
 		// Text is set when the function returns
 		if ($_SESSION['orderStatus'] == 'about_to_order')
 		{
 			$_SESSION['orderStatus'] = 'already_ordered';
 			$_POST = $_SESSION['post-data'];
-			$_SESSION['text'] = PlaceOrder($drinkName, $drinkType);
+			$text = PlaceOrder($drinkName, $drinkType, $drinkType);
+			$_SESSION['text'] = $text;
 		}
 		else
 		{
@@ -35,15 +41,15 @@
 
 	function IsFreeToOrder()
 	{
-		return !isset($_SESSION['orderStatus'] || $_SESSION['orderStatus'] == 'free_to_order';
+		return !isset($_SESSION['orderStatus']) || $_SESSION['orderStatus'] == 'free_to_order';
 	}
 
-	function IsRatableDrink()
+	function IsRatableDrink($drinkName)
 	{
 		return $_GET['orderType'] == 'Mixed' && !strstr($drinkName, 'Eric\'s Jamaican Surprise');
 	}
 
-	function PlaceOrder($drinkName, $drink)
+	function PlaceOrder($drinkName, $drink, $drinkType)
 	{
 		if (isset($_GET['drinkAmount']))
 		{
@@ -70,6 +76,8 @@
 			$order->Custom()
 				->SetOrderData($namesToVolumesMap);
 		}
+		
+		echo '<h1>This is drinkName here: ' . $drinkName . '</h1>';
 		
 		$resultString = $order->Place();
 		

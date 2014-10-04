@@ -37,85 +37,89 @@ these can both be changed
 		private $namesToVolumesMap = NULL;
 		private $resultString = NULL;
 		
-		private static $updateDrinkLock = Mutex::create();
-		private static $grabStationLock = Mutex::create();
+		//private static $updateDrinkLock = Mutex::create();
+		//private static $grabStationLock = Mutex::create();
 		
 		const Mixed = "Mixed";
 		const Custom = "Custom";
 		const Shot = "Shot";
 		
-		public function __construct()
+		public function __construct($inputDatabase = NULL)
 		{
-			$database = new Database();
-		}
-		
-		public function __construct($inputDatabase)
-		{
-			$database = $inputDatabase;
+			if (!$inputDatabase)
+			{
+				$inputDatabase = new Database();
+			}
+			$this->database = $inputDatabase;
 		}
 		
 		public function Mixed()
 		{
-			$orderState = Order::Mixed;
+			$this->orderState = Order::Mixed;
+			return $this;
 		}
 		
 		public function Custom()
 		{
 			$oderState = Order::Custom;
+			return $this;
 		}
 		
 		public function Shot()
 		{
-			$orderState = Order::Shot;
+			$this->orderState = Order::Shot;
+			return $this;
 		}
 		
-		public function Name(const $input)
+		public function Name($input)
 		{
-			$drinkName = $input;
+			$this->drinkName = $input;
+			return $this;
 		}
 		
-		public function SetOrderData(const $inputMap)
+		public function SetOrderData($inputMap)
 		{
-			$namesToVolumesMap = $inputMap;
+			$this->namesToVolumesMap = $inputMap;
+			return $this;
 		}
 		
 		public function Place()
 		{
 			try
 			{
-				BeginOrderByState();
-				Mutex::lock($this->updateDrinkLock);
-				VerifyDrinkAvailable();
-				Mutex::unlock($this->updateDrinkLock);
-				Mutex::lock($this->grabStationLock);
-				$station = FindOpenStation();
-				Mutex::unlock($this->grabStationLock);
-				PlaceInQueue();
-				$resultString = "Your order has been placed on station $station";
+				$this->BeginOrderByState();
+				//Mutex::lock($this->updateDrinkLock);
+				$this->VerifyDrinkAvailable();
+				//Mutex::unlock($this->updateDrinkLock);
+				//Mutex::lock($this->grabStationLock);
+				$station = $this->FindOpenStation();
+				//Mutex::unlock($this->grabStationLock);
+				$this->PlaceInQueue($station);
+				$this->resultString = "Your order has been placed on station $station";
 			}
 			catch (Exception $e)
 			{
-				$resultString = 'Order failed with error: ' . $e->getMessage(). ' Please try again.';
+				$this->resultString = 'Order failed with error: ' . $e->getMessage(). ' Please try again.';
 			}
 			
-			return $resultString;
+			return $this->resultString;
 		}
 		
 		// verify cleanliness... should these 3 order types be different classes?
 		private function BeginOrderByState()
 		{
-			switch ($orderState)
+			switch ($this->orderState)
 			{
 				case Order::Mixed:
-					StartMixedOrder();
+					$this->StartMixedOrder();
 					break;
 
 				case Order::Shot:
-					StartShotOrder();
+					$this->StartShotOrder();
 					break;
 
 				case Order::Custom:
-					StartCustomOrder();
+					$this->StartCustomOrder();
 					break;
 					
 				default:
@@ -125,37 +129,39 @@ these can both be changed
 		
 		private function StartMixedOrder()
 		{
-			if (!$drinkName)
+			//throw new Exception('Here is the drinkName round 2: ' . $this->drinkName);
+			
+			if (!$this->drinkName)
 			{
 				throw new Exception("Ordering a mixedDrink requires a name.");
 			}
 			
-			if (strstr($drinkName, 'Eric\'s Jamaican Surprise') == 0)
+			if (strstr($this->drinkName, 'Eric\'s Jamaican Surprise'))
 			{
-				$drinkName = GetRandomMixedDrink();
+				$this->drinkName = $this->GetRandomMixedDrink();
 			}
 			
-			GetComponentsOfDrink();
+			$this->GetComponentsOfDrink();
 		}
 		
 		private function StartShotOrder()
 		{
-			if (!$drinkName)
+			if (!$this->drinkName)
 			{
 				throw new Exception('Ordering a shot requires a name.');
 			}
 			
-			if (strstr($drinkName, 'Eric\'s Jamaican Surprise') == 0)
+			if (strstr($this->drinkName, 'Eric\'s Jamaican Surprise'))
 			{
-				GetRandomShot();
+				$this->drinkName = $this->GetRandomShot();
 			}
 			
-			$namesToVolumesMap = [$drinkName => 35];
+			$this->namesToVolumesMap = [$this->drinkName => 35];
 		}
 		
 		private function StartCustomOrder()
 		{
-			if (!$namesToVolumesMap)
+			if (!$this->namesToVolumesMap)
 			{
 				throw new Exception('Order data was not set for custom order.');
 			}
@@ -163,11 +169,11 @@ these can both be changed
 		
 		private function GetComponentsOfDrink()
 		{			
-			//SELECT name, ingredients, volume FROM mixed WHERE name="{name}"
-			$queryResult = $database->StartQuery()
+			//SELECT name, ingredients, volume FROM mixed WHERE name="{name}"			
+			$queryResult = $this->database->StartQuery()
 				->select('ingredients', 'volume')
-				->from(Database::MixedTable)
-				->where("name=$drinkName")
+				->from(Database::MixedTable, 'u')
+				->where('name="'.$this->drinkName.'"')
 				->execute()
 				->fetchAll();
 			
@@ -177,7 +183,7 @@ these can both be changed
 				throw new Exception('GetComponentsOfDrink query failed.');
 			}
 			
-			CreateMapFromQuery($queryResult);
+			$this->CreateMapFromQuery($queryResult);
 		}
 		
 		private function CreateMapFromQuery($queryResult)
@@ -188,36 +194,35 @@ these can both be changed
 			$volumeList = $queryResult[0]['volume'];
 			$volumeListArray = explode('|', $volumeList);
 			
-			$namesToVolumesMap = array_combine($componentListArray, $volumeListArray);
+			$this->namesToVolumesMap = array_combine($componentListArray, $volumeListArray);
 		}
 		
 		private function GetRandomMixedDrink()
 		{
 			//SELECT name, ingredients, volume FROM mixed WHERE isOnTable>0 AND proof=0/1 ORDER BY RANDOM() LIMIT 1
-			$queryResult = $database->StartQuery()
-				->select('ingredients', 'volume')
-				->from(Database::MixedTable)
+			$queryResult = $this->database->StartQuery()
+				->select('name')
+				->from(Database::MixedTable, 'u')
 				->where('isOnTable > 0')
-				->andWhere('proof = 1')
+				->andWhere('proof > 0')
 				->orderBy('RANDOM()')
 				->setMaxResults(1)
 				->execute()
-				->fetchAll();
+				->fetchColumn();
 			
 			// Verify correct use of empty() to determine no results
-			if (empty($queryResult))
+			if (!$queryResult)
 			{
 				throw new Exception('Query returned no mixed drinks.');
 			}
-			
-			// verify syntax
-			$drinkName = $queryResult[0]['name'];
+
+			return $queryResult;
 		}
 		
 		private function GetRandomShot()
 		{
 			//SELECT name FROM single WHERE station>-1 AND volume>=35 ORDER BY Random() LIMIT 1
-			$queryResult = $database->StartQuery()
+			$queryResult = $this->database->StartQuery()
 				->select('name')
 				->from(Database::SingleTable)
 				->where('station > -1')
@@ -225,29 +230,29 @@ these can both be changed
 				->orderBy('RANDOM()')
 				->setMaxResults(1)
 				->execute()
-				->fetchAll();
+				->fetchColumn();
 			
 			// Verify correct use of empty() to determine no results
-			if (empty($queryResult))
+			if ($queryResult)
 			{
 				throw new Exception('Query returned no shots.');
 			}
 			
 			// verify syntax
-			$drinkName = $queryResult[0]['name'];
+			return $queryResult;
 		}
 		
 		private function VerifyDrinkAvailable()
 		{
 			//SELECT name, station, volume FROM single WHERE name="{name}" OR name="{name}"...
-			$queryBuilder = $database->StartQuery()
+			$queryBuilder = $this->database->StartQuery()
 				->select('name', 'station', 'volume')
-				->from(Database::SingleTable);
+				->from(Database::SingleTable, 'u');
 			
 			// verify it works to START with an orWhere, could always add where('true') to start
-			foreach ($namesToVolumesMap as $componentName => $volume)
+			foreach ($this->namesToVolumesMap as $componentName => $volume)
 			{
-				$queryBuilder->orWhere("name = $componentName");
+				$queryBuilder->orWhere("name = \"$componentName\"");
 			}
 			
 			$queryResults = $queryBuilder->execute()
@@ -256,7 +261,7 @@ these can both be changed
 			foreach ($queryResults as $row)
 			{
 				$componentName = $row['name'];
-				$volumeToPour = $namesToVolumesMap[$componentName];
+				$volumeToPour = $this->namesToVolumesMap[$componentName];
 				$currentVolume = $row['volume'];
 				$station = $row['station'];
 				
@@ -267,7 +272,7 @@ these can both be changed
 				}
 			}
 			
-			RemoveOrderFromTable($queryResults);
+			$this->RemoveOrderFromTable($queryResults);
 		}
 		
 		private function RemoveOrderFromTable($queryResults)
@@ -276,10 +281,10 @@ these can both be changed
 			foreach ($queryResults as $row)
 			{
 				$componentName = $row['name'];
-				$volumeToPour = $namesToVolumesMap[$componentName];
+				$volumeToPour = $this->namesToVolumesMap[$componentName];
 				$station = $row['station'];
 				
-				$database->StartQuery()
+				$this->database->StartQuery()
 					->update(Database::SingleTable)
 					->set('volume', "volume - $volumeToPour")
 					->where("station = $station")
@@ -290,15 +295,16 @@ these can both be changed
 		private function FindOpenStation()
 		{
 			//SELECT station FROM stations WHERE amount=0 ORDER BY Random() LIMIT 1
-			$queryResult = $database->StartQuery()
+			$queryResult = $this->database->StartQuery()
 				->select('station')
-				->from(Database::StationsTable)
+				->from(Database::StationsTable, 'u')
 				->where('amount = 0')
 				->orderBy('Random()')
 				->setMaxResults(1)
 				->execute()
 				->fetchColumn();
 			
+			throw new Exception(print_r($queryResult, true);
 			if (!$queryResult)
 			{
 				throw new Exception('Queue is currently full.');
@@ -306,14 +312,14 @@ these can both be changed
 			
 			$openStation = $queryResult;
 			
-			OccupyStation($openStation);
+			$this->OccupyStation($openStation);
 			return $openStation;
 		}
 		
 		private function OccupyStation($openStation)
 		{
 			//UPDATE stations SET amount=amount+1 WHERE station={station}
-			$database->StartQuery()
+			$this->database->StartQuery()
 				->update(Database::StationsTable)
 				->set('amount', 'amount + 1')
 				->where('station = ' . $openStation)
@@ -323,15 +329,19 @@ these can both be changed
 		private function PlaceInQueue($station)
 		{
 			//INSERT INTO queue (orderString, station) values("~", "station")
-			$orderString = BuildOrderString($namesToVolumesMap, $database);
+			$orderString = BuildOrderString($this->namesToVolumesMap, $this->database);
 			
-			$database->StartQuery()
+			$sql = "INSERT INTO queue (orderString, station) values(\"$orderString\", $station)";
+			
+			$this->database->ExecuteSql($sql);
+			
+			/*$this->database->StartQuery()
 				->insert(Database::QueueTable)
 				->setValue('orderString', '?')
 				->setValue('station', '?')
 				->setParameter(0, $orderString)
 				->setParameter(1, $station)
-				->execute();
+				->execute();*/
 		}
 	}
 ?>

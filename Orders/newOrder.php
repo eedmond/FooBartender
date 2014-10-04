@@ -1,11 +1,12 @@
-<?php			
+<?php
+	ini_set('display_errors',1);
+	ini_set('display_startup_errors',1);
 	require_once(dirname(__FILE__) . '/../Utilities/Order.php');
 	require_once(dirname(__FILE__) . '/newOrderFunctions.php');
 	
 	session_start();
 	$drinkName = $_GET['drinkName'];
 	$_SESSION['drinkName'] = $drinkName;
-	$drinkType = $_GET['drinkType'];
 ?>
 <head>
 	<title>Thank you for ordering!</title>
@@ -19,9 +20,9 @@
 	<script src="../js/newOrderJS.js"></script>
 
 	<noscript>
-		<link rel="stylesheet" href="css/skel-noscript.css" />
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="stylesheet" href="css/style-wide.css" />
+		<link rel="stylesheet" href="../css/skel-noscript.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/style-wide.css" />
 	</noscript>
 </head>
 <body>
@@ -51,7 +52,7 @@
 				<p> <?php echo $text; ?> </p><br>
 				<footer><a href="index.php" class="button scrolly">Back to FooBartender</a></footer>
 			<?php
-				if (IsRatableDrink())
+				if (IsRatableDrink($drinkName))
 				{ 
 			?>
 					<h1>Rate this drink!</h1><br>

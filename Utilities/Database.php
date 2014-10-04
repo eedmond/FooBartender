@@ -85,5 +85,10 @@
 			return $this->query->expr();
 		}
 		
+		public function ExecuteSql($sql)
+		{
+			$this->connection->exec($sql);
+		}
+		
 	}
 ?>
