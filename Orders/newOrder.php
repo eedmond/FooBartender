@@ -6,7 +6,6 @@
 	
 	session_start();
 	$drinkName = $_GET['drinkName'];
-	$_SESSION['drinkName'] = $drinkName;
 ?>
 <head>
 	<title>Thank you for ordering!</title>
@@ -18,18 +17,15 @@
 	<script src="../js/skel.min.js"></script>
 	<script src="../js/init.js"></script>
 	<script src="../js/newOrderJS.js"></script>
-
-	<noscript>
-		<link rel="stylesheet" href="../css/skel-noscript.css" />
-		<link rel="stylesheet" href="../css/style.css" />
-		<link rel="stylesheet" href="../css/style-wide.css" />
-	</noscript>
+	<link rel="stylesheet" href="../css/skel-noscript.css" />
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="../css/style-wide.css" />
 </head>
 <body>
 	<!-- Main Screen -->
 		<section id="header" class="dark">
 			<header>
-				<h1>Thank you for ordering a <?php echo $drinkName ?></h1>
+				<h1>Thank you for ordering a <?php echo GetDrinkName() ?></h1>
 			<?php
 			//If it is the first time around
 			if (IsFreeToOrder())
@@ -50,7 +46,7 @@
 				$text = GetOrderResult();
 			?>
 				<p> <?php echo $text; ?> </p><br>
-				<footer><a href="index.php" class="button scrolly">Back to FooBartender</a></footer>
+				<footer><a href="../index.php" class="button scrolly">Back to FooBartender</a></footer>
 			<?php
 				if (IsRatableDrink($drinkName))
 				{ 

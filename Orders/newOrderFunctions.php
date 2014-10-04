@@ -7,15 +7,6 @@
 	{
 		$drinkType = $_GET['orderType'];
 		$drinkName = $_GET['drinkName'];
-	
-		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
-		{
-			if ($_SESSION['orderStatus'] == 'about_to_order')
-			{
-				$file = file("CustomDrinkNames.txt");
-				$_SESSION['drinkName'] = $file[rand(0, count($file) - 1)];
-			}
-		}
 		
 		$text = '';
 		
@@ -37,6 +28,27 @@
 		}
 		
 		return $text;
+	}
+
+	function GetDrinkName()
+	{
+		if (isset($_SESSION['drinkName']))
+		{
+			return $_SESSION['drinkName'];
+		}
+		
+		$drinkType = $_GET['orderType'];
+		$drinkName = $_GET['drinkName'];
+
+		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
+		{
+			$file = file("CustomDrinkNames.txt");
+			$drinkName = $file[rand(0, count($file) - 1)];
+		}
+		
+		$_SESSION['drinkName'] = $drinkName;
+		
+		return $drinkName;
 	}
 
 	function IsFreeToOrder()

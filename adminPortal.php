@@ -174,7 +174,7 @@ function onClearClick() {
 			</section>
 			
 		<!-- Manage Drinks -->
-			<section id="Manage Drinks" class="main">
+			<section id="ManageDrinks" class="main">
 				<header>
 					<div class="container">
 						<h2>Manage Drinks</h2>
@@ -183,7 +183,7 @@ function onClearClick() {
 				<div class="content dark style2">
 					<div class="header">
 						<div align="center">Create or delete drinks from the database</div><br>
-						<form id="SQLform" name="SQLform" action="SQLCommand.php" method="POST">
+						<form id="SQLform" name="SQLform" action="/Utilities/SQLCommand.php" method="POST">
 							<div align="center"><input type="text" size="40" name="command" value="Custom SQL Command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div><br>
 						</form>
 					</div>
@@ -199,35 +199,7 @@ function onClearClick() {
 								</div>
 							</div>
 						<?php
-							$db = new PDO('sqlite:FB.db');
-							$getNames = $db->query("SELECT * FROM single WHERE station > -1 ORDER BY name ASC");
-							$queryResult = $getNames->fetchAll();
-	
-							for ($count = 0; $count < 16; $count++)
-							{
-								if ($count == 0) {
-									echo '<select id="text', $count, '" name="text', $count, '" style="display: inline">Ingredient<option value=0>Add Drink</option>';
-								} else {
-									echo '<select id="text', $count, '" name="text', $count, '" style="display: none">Ingredient<option value=0>Add Drink</option>';
-								}
-								foreach ($queryResult as $row)
-								{
-									$drinkName = $row['name'];
-									echo '<option value="', $drinkName, '">', $row['name'], '</option>';
-								}
-								echo '</select>';
-
-								if ($count == 0) {
-									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: inline; margin-right: 12px; margin-bottom: 5px;">';
-									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: inline"></button>';
-								} else {
-									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: none; margin-right: 12px; margin-bottom: 5px">';
-									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: none"></button>';
-								}
-								if ($count % 2 == 1)
-									echo '<br>';
-							}
-						unset($db);
+							require(dirname(__FILE__) . '/customDrinkMenu.php');
 						?>
 						</form>
 						<div class="row">
@@ -253,6 +225,35 @@ function onClearClick() {
 					<div class="header">
 						<div align="center">View and erase contents of the queue</div>
 					</div>
+					
+						<div>
+							<div style="margin-left: 15%; float: left; width: 25%; border-style:solid; border-width: 2px; padding-left: 4px;">Station</div>
+							<div style="margin-left: 40%; width: 50%; border-style:solid; border-width: 2px; padding-left: 4px;">Order String</div>
+						</div>
+						
+						<?php
+							$database = new Database();
+							$results = $database->StartQuery()
+								->select('station', 'orderString')
+								->from(Database::QueueTable, 'u')
+								->orderBy('station')
+								->execute()
+								->fetchAll();
+								
+							foreach ($results as $row)
+							{
+						?>
+								<div>
+									<div style="margin-left: 15%; float: left; width: 25%; border-style:solid; border-width: 2px; padding-left: 4px;">
+										<?php echo $row['station'] ?>
+									</div>
+									<div style="margin-left: 40%; width: 50%; border-style:solid; border-width: 2px; padding-left: 4px;">
+										<?php echo $row['orderString'] ?>
+									</div>
+								</tr>
+						<?php
+							}
+						?>
 					<div class="container">
 						<div class="row">
 							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">

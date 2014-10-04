@@ -131,9 +131,7 @@ these can both be changed
 		}
 		
 		private function StartMixedOrder()
-		{
-			//throw new Exception('Here is the drinkName round 2: ' . $this->drinkName);
-			
+		{			
 			if (!$this->drinkName)
 			{
 				throw new Exception("Ordering a mixedDrink requires a name.");
