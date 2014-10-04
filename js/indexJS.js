@@ -202,33 +202,33 @@ function submitDrink(drinkType)
 	{
 		drinkAmount = "taste";
 	}
-	var orderPostFix = "";
+	var surpriseType = "";
 	if (mixedName == "Eric's Jamaican Surprise")
 	{
 		if (drinkData.parents(".slider").attr('id') == "mixedDrinkSlider")
 		{
-			orderPostFix = "|Mixed Drink";
+			surpriseType = "|Mixed Drink";
 		}
 		else
 		{
-			orderPostFix = "|Non-Alcoholic";
+			surpriseType = "|Non-Alcoholic";
 		}
 	}
 	$("body").fadeOut(1000);
-	location.href = "Orders/newOrder.php?custom=false&drinkName=" + mixedName + orderPostFix + "&drinkAmount=" + drinkAmount;
+	location.href = "Orders/newOrder.php?orderType=Mixed&drinkName=" + mixedName + surpriseType + "&drinkAmount=" + drinkAmount;
 }
 
 function submitShot()
 {
 	FreeSession();
 	var drinkData = $(".image.selected");
-	var mixedName = drinkData.attr('name').substring(17, drinkData.attr('name').search("</h1>"));
-	var orderPostFix = "";
-	if (mixedName == "Eric's Jamaican Surprise")
-		orderPostFix = "|Shot";
+	var shotName = drinkData.attr('name').substring(17, drinkData.attr('name').search("</h1>"));
+	var surpriseType = "";
+	if (shotName == "Eric's Jamaican Surprise")
+		surpriseType = "|Shot";
 		
 	$("body").fadeOut(1000);
-	location.href = "Orders/newOrder.php?custom=true&drinkName=" + mixedName + orderPostFix;
+	location.href = "Orders/newOrder.php?orderType=Shot&drinkName=" + shotName + surpriseType;
 }
 
 // Custom Drink JS

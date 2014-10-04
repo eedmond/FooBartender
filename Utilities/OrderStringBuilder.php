@@ -2,13 +2,13 @@
 
 	require_once(dirname(__FILE__).'/Database.php');
 
-	function BuildOrderString(&$namesToVolumesMap)
+	function BuildOrderString($namesToVolumesMap)
 	{
 		$database = new Database();
 		return BuildOrderString($namesToVolumesMap, $database);
 	}
 	
-	function BuildOrderString(&$namesToVolumesMap, &$database)
+	function BuildOrderString($namesToVolumesMap, $database)
 	{
 		$volumesArray = array_fill(0, 16, 0);
 		

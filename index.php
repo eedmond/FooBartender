@@ -230,7 +230,7 @@
 					<div align="center">All the power you could ever ask for is right at your fingertips</div><br>
 				</div>
 				<div class="container small">
-					<form id="customForm" method="post" action="Orders/newOrder.php?custom=true&drinkName=custom">
+					<form id="customForm" method="post" action="Orders/newOrder.php?orderType=custom&drinkName=custom">
 						<div class="row">
 							<div class="12u" align="center">
 								<ul class="actions">

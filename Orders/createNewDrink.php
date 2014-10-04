@@ -43,24 +43,10 @@
 	
 	$valuesArray['ingredients'] = implode('|', $partsArray);
 
-	$alcoholic = 0;
-	$volumeArray = array();
-	foreach($partsArray as $name => $part)
-	{
-		//$queryResult = $db->query("SELECT proof FROM single WHERE name=\"" . $name . "\"");
-		$proof = $database->StartQuery()
-							->select('proof')
-							->from(Database::SingleTable)
-							->where('name = "' . $name . '"')
-							->execute()
-							->fetchAll(); //fetchAll(PDO::FETCH_COLUMN, 0)
-							
-		if ($proof[0] != 0)
-			$alcoholic = 1;
-		
-		$currentVolume = (string)floor(($part * 175 / $totalParts));
-		array_push($volumeArray, $currentVolume);
-	}
+	$vals = insertMixed_collectVolumes($partsArray);
+	$volumeArray = $vals[0];
+	$alcoholic = $vals[1];
+	
 	
 	$valuesArray['volume'] = implode('|', $volumeArray);
 	$valuesArray['isOnTable'] = 0;
@@ -82,4 +68,29 @@
 	<script>window.history.go(-1)</script>
 <?php
 	die();
+	
+	
+	function insertMixed_collectVolumes($partsArray)
+	{
+		$alcoholic = 0;
+		$volumeArray = array();
+		foreach($partsArray as $name => $part)
+		{
+			//$queryResult = $db->query("SELECT proof FROM single WHERE name=\"" . $name . "\"");
+			$proof = $database->StartQuery()
+								->select('proof')
+								->from(Database::SingleTable)
+								->where('name = "' . $name . '"')
+								->execute()
+								->fetchAll(); //fetchAll(PDO::FETCH_COLUMN, 0)
+								
+			if ($proof[0] != 0)
+				$alcoholic = 1;
+			
+			$currentVolume = (string)floor(($part * 175 / $totalParts));
+			array_push($volumeArray, $currentVolume);
+		}
+		
+		return array($volumeArray, $alcoholic);
+	}
 ?>
