@@ -46,7 +46,7 @@
 		<section id="header" class="dark">
 			<header>
 				<h1>Welcome to the FooBartender</h1>
-				<p>Designed and built by Michael Cardoso, Eric Edmond, and Jonathan Soifer</p>
+				<p>Designed and built by Michael Cardoso,<br/>Jonathan Soifer, Eric Edmond, and Ian Blaauw</p>
 			</header>
 			<footer>
 				<a href="#order" class="button scrolly">Order a Drink</a>
@@ -230,7 +230,7 @@
 					<div align="center">All the power you could ever ask for is right at your fingertips</div><br>
 				</div>
 				<div class="container small">
-					<form id="customForm" method="post" action="Orders/newOrder.php?orderType=custom&drinkName=custom">
+					<form id="customForm" method="post" action="Orders/newOrder.php?orderType=Custom&drinkName=Custom">
 						<div class="row">
 							<div class="12u" align="center">
 								<ul class="actions">

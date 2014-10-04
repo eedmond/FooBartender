@@ -4,14 +4,18 @@ $(document).ready(function() {
 	$('input[id="rate"]').click(function(){
 		$.ajax({
 			url: 'rateDrink.php',
-			type: 'POST',
+			type: 'post',
 			data: {
-				number: document.getElementById("rating").value
+				rating: $('#rating').val()
 			},
-			success: function() {
-				alert("It Worked!");
+			success: function() {},
+			
+			error: function() {
+				alert('Failed to rate drink.');
 			}
 		});
+	
+		$("#rateSection").fadeOut(500);
 	});
 });
 

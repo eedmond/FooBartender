@@ -1,69 +1,47 @@
 $(document).ready(function(){
 
-$.ajax(
-{
-    url: 'Orders/fetchDrinks.php',
-   type: 'post',
-   data: { "drinkType": "mixedDrink"},
-  success: function(data) {
-  	$('#mixedDrinkSlider').html(data);
-  },
-  async: false
-}
-);
+	$.ajax(
+	{
+		url: 'Orders/fetchDrinks.php',
+	   type: 'post',
+	   data: { "drinkType": "mixedDrink"},
+	  success: function(data) {
+		$('#mixedDrinkSlider').html(data);
+	  },
+	  async: false
+	}
+	);
 
-$.ajax(
-{
-    url: 'Orders/fetchDrinks.php',
-   type: 'post',
-   data: { "drinkType": "shot"},
-  success: function(data) {
-  	$('#shotSlider').html(data);
-  },
-  async: false
-}
-);
+	$.ajax(
+	{
+		url: 'Orders/fetchDrinks.php',
+	   type: 'post',
+	   data: { "drinkType": "shot"},
+	  success: function(data) {
+		$('#shotSlider').html(data);
+	  },
+	  async: false
+	}
+	);
 
-$.ajax(
-{
-    url: 'Orders/fetchDrinks.php',
-   type: 'post',
-   data: { "drinkType": "nonAlcoholic"},
-  success: function(data) {
-  	$('#nonAlcoholicSlider').html(data);
-  },
-  async: false
-}
-);
-
-    $(window).scroll(function(){
-		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-		{
-			return;
-		}
-        var posFromTop = $(window).scrollTop();
-
-        if(posFromTop+1 > $('#Mixed').offset().top)
-		{
-			if (!$('#NavTool').is(":visible"))
-			{
-				$('#NavTool').fadeIn();
-			}
-        } else
-		{
-			if ($('#NavTool').is(":visible"))
-			{
-				$('#NavTool').fadeOut();
-			}
-        }
-    });
+	$.ajax(
+	{
+		url: 'Orders/fetchDrinks.php',
+	   type: 'post',
+	   data: { "drinkType": "nonAlcoholic"},
+	  success: function(data) {
+		$('#nonAlcoholicSlider').html(data);
+	  },
+	  async: false
+	}
+	);
 
 	$('.slider').bxSlider({
 		slideWidth: 1000,
 		minSlides: 1,
-		maxSlides: 3,
+		maxSlides: 1,
 		slideMargin: 10,
-		infiniteLoop: false
+		infiniteLoop: false,
 	});
 
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
@@ -71,20 +49,46 @@ $.ajax(
 		$('.bx-prev').hide();
 		$('.bx-next').hide();
 		$('.mobilenav').show();
+		$('.slider').bxSlider({
+			captions: true
+		});
 	}
-  
-	$(".orderIcon").mouseenter(function(){
-		$(this).stop(true, true);
-		MouseEnter($(this).attr('id'), $(this));
-	});
-	$(".orderIcon").mouseleave(function() {
-		$(this).stop(true, true);
-		MouseLeave($(this).attr('id'), $(this));
-	});
-	$(".orderIcon").click(function() {
-		$(this).stop(true, true);
-		ClickFunction($(this).attr('id'), $(this));
-	});
+	else
+	{    
+		$(window).scroll(function()
+		{
+			var posFromTop = $(window).scrollTop();
+
+			if(posFromTop+1 > $('#Mixed').offset().top)
+			{
+				if (!$('#NavTool').is(":visible"))
+				{
+					$('#NavTool').fadeIn();
+				}
+			} else
+			{
+				if ($('#NavTool').is(":visible"))
+				{
+					$('#NavTool').fadeOut();
+				}
+			}
+		});
+		
+		$(".orderIcon").mouseenter(function(){
+			$(this).stop(true, true);
+			MouseEnter($(this).attr('id'), $(this));
+		});
+		
+		$(".orderIcon").mouseleave(function() {
+			$(this).stop(true, true);
+			MouseLeave($(this).attr('id'), $(this));
+		});
+		
+		$(".orderIcon").click(function() {
+			$(this).stop(true, true);
+			ClickFunction($(this).attr('id'), $(this));
+		});
+	}
 
 });
 
@@ -178,6 +182,11 @@ function ClickFunction(type, element)
 		$(orderButt).stop(true, false);
 		$(orderButt).fadeIn("slow");
 	}
+}
+
+function MobileClickFunction(type, element)
+{
+	element.addClass("selected");
 }
 
 function FreeSession()

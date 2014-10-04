@@ -29,7 +29,7 @@
 		$query->select('*')
 			->from(Database::SingleTable)
 			->where('proof > 25')
-			->andwhere('volume > 34');
+			->andwhere('volume >= 35');
 	}
 
 	$getNames = $query->execute();
@@ -67,6 +67,7 @@
 		$durations = explode("|", $duration_list);
 		$numRatings = $row['numRatings'];
 		$rating = $row['rating'];
+		$drinkName = $row['name'];
 		
 		$ingredients = "";
 		$totalProof = 0;
@@ -76,7 +77,7 @@
 			foreach ($ingred_list as $item)
 			{
 				$ingredients = $ingredients . $item . ": " . $durations[$index] . "mL<br>";
-				if ($drinkType == "mixedDrink" && $row['name'] != "Eric's Jamaican Surprise")
+				if ($drinkType == "mixedDrink" && $drinkName != "Eric's Jamaican Surprise")
 				{
 					$thisProof = $database->StartQuery()
 						->select('proof')
@@ -97,7 +98,7 @@
 		
 		$totalRating = $rating / $numRatings;
 		
-		$image = strtolower($row['name']);
+		$image = strtolower($drinkName);
 		$image = preg_replace("/\s+/", '', $image);
 		$image = preg_replace("/'/", '', $image);
 
@@ -107,13 +108,13 @@
 		echo '<div class="6u">';
 		#														****** If this name is changed you MUST edit *******
 		#														****** index.php submit functions            *******
-		echo '<a class="image full orderIcon"  id="', $drinkType, '" name="<h1 align=center>', $row['name'], "</h1>";
-		if ($row['name'] == "Eric's Jamaican Surprise")
+		echo "<a class=\"image full orderIcon\" id=\"$drinkType\" name=\"<h1 align=center>$drinkName</h1>";
+		if ($drinkName == "Eric's Jamaican Surprise")
 			echo '“The mistake is thinking that there can be an antidote to the uncertainty.”' . "<br>" . '― David Levithan, The Lover\'s Dictionary';
 		else
 			echo $ingredients;
 		
-		if ($row['name'] != "Eric's Jamaican Surprise")
+		if ($drinkName != "Eric's Jamaican Surprise")
 		{
 			if (($drinkType == "mixedDrink" || $drinkType == "shot"))
 			{
@@ -132,7 +133,7 @@
 		
 		echo '" >';
 			
-		echo '<img src="../images/Drinks/', $image, '.jpg" alt="FixThis" />';
+		echo "<img src='../images/Drinks/$image.jpg' alt='FixThis' title=\"$drinkName\" />";
 		echo '</a>';
 		echo '</div>';
 		

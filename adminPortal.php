@@ -1,5 +1,13 @@
-<?php include "login.php"; ?>
-<?php include "login_head.php"; ?>
+<?php
+	ini_set('display_errors',1);
+	ini_set('display_startup_errors',1);
+?>
+<?php //include "login.php"; ?>
+<?php //include "login_head.php"; ?>
+<?php 
+	require_once(dirname(__FILE__) . "/Utilities/Database.php");
+	$database = new Database(); 
+?>
 <!DOCTYPE HTML>
 <!--
 	Tessellate 1.0 by HTML5 UP
@@ -19,11 +27,53 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/init.js"></script>
 
-<!-- bxSlider Javascript file -->
-<script src="jquery.bxslider/jquery.bxslider.min.js"></script>
-<!-- bxSlider CSS file -->
-<link href="jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
+		<!-- bxSlider Javascript file -->
+		<script src="jquery.bxslider/jquery.bxslider.min.js"></script>
+		<!-- bxSlider CSS file -->
+		<link href="jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
 
+		<style type="text/css">
+			.table, .table_first, .table_c1, .table_c2, .table_c3
+			{
+				height: 40px;
+				display: inline;
+				float: left;
+				border-style: solid;
+				border-width: 2px;
+				padding-left: 4px;
+			}
+			
+			.table_first
+			{
+				margin-left: 15%;
+			}
+			
+			.table_c1
+			{
+				width: 25%;
+			}
+			
+			.table_c2
+			{
+				width: 40%;
+			}
+			
+			.table_c3
+			{
+				width: 10%;
+			}
+
+			a.button.table_button
+			{
+				width: 100%;
+				height: 95%;
+				margin: 0px;
+				padding 0px;
+				padding-top: 2px;
+				vertical-align: middle;
+			}
+		</style>
+		
   <!--script src="js/jquery-1.10.2.js"></script-->
 		<noscript>
 			<link rel="stylesheet" href="css/skel-noscript.css" />
@@ -40,7 +90,76 @@
 					<li><a href="#ManageErrors" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"><span>Dribbble</span></a></li>
 				</ul>
 	<body>
+	<!-- Necessary Functions -->
+		<script>
+		$(document).ready(function(){
+			$(window).scroll(function(){
+				if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+					return;
+				var posFromTop = $(window).scrollTop();
 
+				if(posFromTop+1 > $('#Mixed').offset().top){
+					if (!$('#NavTool').is(":visible"))
+						$('#NavTool').fadeIn();
+				} 
+				else {
+					if ($('#NavTool').is(":visible"))
+						$('#NavTool').fadeOut();
+				}
+			});
+		});
+
+
+		function FreeSession()
+		{
+			xmlhttp=new XMLHttpRequest();
+			xmlhttp.open("GET", "session_free.php", false);
+			xmlhttp.send();
+		}
+
+		var customCounter = 0;
+		function onPlusClick() {
+			customCounter = customCounter + 1;
+			var textID = "text" + customCounter;
+			var partsID = "parts" + customCounter;
+			var plusID = "plus" + customCounter;
+			var prevPlusID = "plus" + (customCounter - 1);
+			var textDOM = document.getElementsByName(textID)[0];
+			var partsDOM = document.getElementsByName(partsID)[0];
+			var plusDOM = document.getElementsByName(plusID)[0];
+			var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
+			$(textDOM).fadeTo("slow", 1);
+			$(partsDOM).fadeTo("slow", 1);
+			$(plusDOM).fadeIn("slow");
+		}
+
+
+		function onClearClick() {
+			while (customCounter > 0) {
+				var textID = "text" + customCounter;
+				var partsID = "parts" + customCounter;
+				var plusID = "plus" + customCounter;
+				document.getElementsByName(textID)[0].style.display="none";
+				document.getElementsByName(partsID)[0].style.display="none";
+				document.getElementsByName(plusID)[0].style.display="none";
+				customCounter = customCounter - 1;
+			}
+			document.getElementsByName("plus0")[0].style.display="inline";
+		}
+
+		function clearEntireQueue() {
+			$.ajax({
+				url: 'Utilities/ClearQueue.php',
+				type: 'get',
+				success: function(data) {
+					//We could potentially put debugging statements here for a failed ClearQueue
+					$('#clearQueueDebug').html(data);
+					//location.reload();
+				},
+				async: false
+			});
+		}
+		</script>
 		<!-- Main -->
 			<section id="Main" class="main">
 				<header>
@@ -93,62 +212,6 @@
 					</div>
 				</div>
 			</section>
-
-		<!-- Necessary Functions -->
-<script>
-$(document).ready(function(){
-    $(window).scroll(function(){
-	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-		return;
-        var posFromTop = $(window).scrollTop();
-
-        if(posFromTop+1 > $('#Mixed').offset().top){
-		if (!$('#NavTool').is(":visible"))
-			$('#NavTool').fadeIn();
-        } else {
-		if ($('#NavTool').is(":visible"))
-			$('#NavTool').fadeOut();
-        }
-    });
-});
-
-function FreeSession()
-{
-    xmlhttp=new XMLHttpRequest();
-	xmlhttp.open("GET", "session_free.php", false);
-	xmlhttp.send();
-}
-
-var customCounter = 0;
-function onPlusClick() {
-	customCounter = customCounter + 1;
-	var textID = "text" + customCounter;
-	var partsID = "parts" + customCounter;
-	var plusID = "plus" + customCounter;
-	var prevPlusID = "plus" + (customCounter - 1);
-	var textDOM = document.getElementsByName(textID)[0];
-	var partsDOM = document.getElementsByName(partsID)[0];
-	var plusDOM = document.getElementsByName(plusID)[0];
-	var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
-	$(textDOM).fadeTo("slow", 1);
-	$(partsDOM).fadeTo("slow", 1);
-	$(plusDOM).fadeIn("slow");
-}
-
-function onClearClick() {
-	while (customCounter > 0) {
-		var textID = "text" + customCounter;
-		var partsID = "parts" + customCounter;
-		var plusID = "plus" + customCounter;
-		document.getElementsByName(textID)[0].style.display="none";
-		document.getElementsByName(partsID)[0].style.display="none";
-		document.getElementsByName(plusID)[0].style.display="none";
-		customCounter = customCounter - 1;
-	}
-	document.getElementsByName("plus0")[0].style.display="inline";
-}
-
-</script>
 		<!-- Table Setup -->
 			<section id="TableSetup" class="main">
 				<header>
@@ -160,6 +223,37 @@ function onClearClick() {
 					<div class="header">
 						<div align="center">Setup which drinks are on the table and where</div>
 					</div>
+					<br/>
+					<div class="header" align="center">
+						<u>The Single Table</u>
+					</div>
+					<div>
+						<div class="table_c3 table_first">Station</div>
+						<div class="table_c1">Name</div>
+						<div class="table_c2">Volume</div>
+					</div>
+					<?php
+						$results = $database->StartQuery()
+							->select('station', 'name', 'volume')
+							->from(Database::SingleTable, 'u')
+							->where('station > -1')
+							->orderBy('station')
+							->execute()
+							->fetchAll();
+						
+						//TODO: sort $results
+							
+						foreach ($results as $row)
+						{
+					?>
+							<div>
+								<div class="table_c3 table_first"><?php echo $row['station']; ?></div>
+								<div class="table_c1"><?php echo $row['name']; ?></div>
+								<div class="table_c2"><?php echo $row['volume']; ?></div>
+							</div>
+					<?php
+						}
+					?>
 					<div class="container">
 						<div class="row">
 							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
@@ -174,7 +268,7 @@ function onClearClick() {
 			</section>
 			
 		<!-- Manage Drinks -->
-			<section id="Manage Drinks" class="main">
+			<section id="ManageDrinks" class="main">
 				<header>
 					<div class="container">
 						<h2>Manage Drinks</h2>
@@ -183,7 +277,7 @@ function onClearClick() {
 				<div class="content dark style2">
 					<div class="header">
 						<div align="center">Create or delete drinks from the database</div><br>
-						<form id="SQLform" name="SQLform" action="SQLCommand.php" method="POST">
+						<form id="SQLform" name="SQLform" action="/Utilities/SQLCommand.php" method="POST">
 							<div align="center"><input type="text" size="40" name="command" value="Custom SQL Command" /><input type="submit" value="Execute Command" style="border:none; background-color:transparent; color:white;"></div><br>
 						</form>
 					</div>
@@ -199,35 +293,7 @@ function onClearClick() {
 								</div>
 							</div>
 						<?php
-							$db = new PDO('sqlite:FB.db');
-							$getNames = $db->query("SELECT * FROM single WHERE station > -1 ORDER BY name ASC");
-							$queryResult = $getNames->fetchAll();
-	
-							for ($count = 0; $count < 16; $count++)
-							{
-								if ($count == 0) {
-									echo '<select id="text', $count, '" name="text', $count, '" style="display: inline">Ingredient<option value=0>Add Drink</option>';
-								} else {
-									echo '<select id="text', $count, '" name="text', $count, '" style="display: none">Ingredient<option value=0>Add Drink</option>';
-								}
-								foreach ($queryResult as $row)
-								{
-									$drinkName = $row['name'];
-									echo '<option value="', $drinkName, '">', $row['name'], '</option>';
-								}
-								echo '</select>';
-
-								if ($count == 0) {
-									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: inline; margin-right: 12px; margin-bottom: 5px;">';
-									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: inline"></button>';
-								} else {
-									echo '<input type="number" id="parts', $count, '" name="parts', $count, '" class="number" value=0 min="0" style="display: none; margin-right: 12px; margin-bottom: 5px">';
-									echo '<input type="button" id="plus', $count, '" name="plus', $count, '" onclick="javascript:onPlusClick();" value="+" alt="New Drink" style="display: none"></button>';
-								}
-								if ($count % 2 == 1)
-									echo '<br>';
-							}
-						unset($db);
+							require(dirname(__FILE__) . '/customDrinkMenu.php');
 						?>
 						</form>
 						<div class="row">
@@ -241,7 +307,6 @@ function onClearClick() {
 					</div>
 				</div>
 			</section>
-
 		<!-- Manage Queue -->
 			<section id="ManageQueue" class="main">
 				<header>
@@ -253,6 +318,48 @@ function onClearClick() {
 					<div class="header">
 						<div align="center">View and erase contents of the queue</div>
 					</div>
+					<div id="clearQueueButton" align="center">
+						<a class="button" onclick="javascript:clearEntireQueue();" style="margin-bottom: 10px;">Clear Entire Queue</a>
+					</div>
+					<div id="clearQueueDebug"></div>
+					
+					<!-- Table Headers -->
+					<div>
+						<div class="table_c1 table_first">Station</div>
+						<div class="table_c2">Order String</div>
+						<div class="table_c3">Delete</div>
+					</div>
+						
+					<?php
+						if (!isset($database))
+						{
+							$database = new Database();
+						}
+						
+						$results = $database->StartQuery()
+							->select('station', 'orderString')
+							->from(Database::QueueTable, 'u')
+							->orderBy('station')
+							->execute()
+							->fetchAll();
+							
+						foreach ($results as $row)
+						{
+					?>
+							<div>
+								<div class="table_c1 table_first">
+									<?php echo $row['station'] ?>
+								</div>
+								<div class="table_c2">
+									<?php echo $row['orderString'] ?>
+								</div>
+								<div class="table_c3" style="padding: 0px;">
+									<a class="button table_button">X</a>
+								</div>
+							</div>
+					<?php
+						}
+					?>
 					<div class="container">
 						<div class="row">
 							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">
@@ -304,6 +411,6 @@ function onClearClick() {
 					</ul>
 				</div>
 			</section>
-
+		
 	</body>
 </html>

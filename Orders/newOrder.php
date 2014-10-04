@@ -6,7 +6,6 @@
 	
 	session_start();
 	$drinkName = $_GET['drinkName'];
-	$_SESSION['drinkName'] = $drinkName;
 ?>
 <head>
 	<title>Thank you for ordering!</title>
@@ -14,22 +13,19 @@
 	<meta name="description" content="" />
 	<meta name="keyword" content="" />
 	<link href="http://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic" rel="stylesheet" type="text/css" />
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/skel.min.js"></script>
-	<script src="../js/init.js"></script>
-	<script src="../js/newOrderJS.js"></script>
-
-	<noscript>
-		<link rel="stylesheet" href="../css/skel-noscript.css" />
-		<link rel="stylesheet" href="../css/style.css" />
-		<link rel="stylesheet" href="../css/style-wide.css" />
-	</noscript>
+	<script src="/../js/jquery.min.js"></script>
+	<script src="/../js/skel.min.js"></script>
+	<script src="/../js/init.js"></script>
+	<script src="/../js/newOrderJS.js"></script>
+	<link rel="stylesheet" href="/../css/skel-noscript.css" />
+	<link rel="stylesheet" href="/../css/style.css" />
+	<link rel="stylesheet" href="/../css/style-wide.css" />
 </head>
 <body>
 	<!-- Main Screen -->
 		<section id="header" class="dark">
 			<header>
-				<h1>Thank you for ordering a <?php echo $drinkName ?></h1>
+				<h1>Thank you for ordering a <?php echo GetDrinkName() ?></h1>
 			<?php
 			//If it is the first time around
 			if (IsFreeToOrder())
@@ -50,14 +46,16 @@
 				$text = GetOrderResult();
 			?>
 				<p> <?php echo $text; ?> </p><br>
-				<footer><a href="index.php" class="button scrolly">Back to FooBartender</a></footer>
+				<footer><a href="../index.php" class="button scrolly">Back to FooBartender</a></footer>
 			<?php
 				if (IsRatableDrink($drinkName))
 				{ 
 			?>
-					<h1>Rate this drink!</h1><br>
-					<input type="number" class="number" id="rating" value="0" min="0" max="10">/10
-					<input type="button" class="button" id="rate" name="rate" value="Rate" alt="Rate">
+					<div id="rateSection">
+						<h1>Rate this drink!</h1><br>
+						<input type="number" class="number" id="rating" value="0" min="0" max="10">/10
+						<input type="button" class="button" id="rate" name="rate" value="Rate" alt="Rate">
+					</div>
 			<?php
 				}
 			}

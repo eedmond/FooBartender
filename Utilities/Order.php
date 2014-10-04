@@ -35,6 +35,7 @@ these can both be changed
 		private $database;
 		private $drinkName = NULL;
 		private $orderState = NULL;
+		private $amountToPourInMl = 175;
 		private $namesToVolumesMap = NULL;
 		private $resultString = NULL;
 		
@@ -62,7 +63,7 @@ these can both be changed
 		
 		public function Custom()
 		{
-			$oderState = Order::Custom;
+			$this->orderState = Order::Custom;
 			return $this;
 		}
 		
@@ -78,6 +79,12 @@ these can both be changed
 			return $this;
 		}
 		
+		public function SetAmountToPour($inputAmount)
+		{
+			$this->amountToPourInMl = $inputAmount;
+			return $this;
+		}
+		
 		public function SetOrderData($inputMap)
 		{
 			$this->namesToVolumesMap = $inputMap;
@@ -89,6 +96,7 @@ these can both be changed
 			try
 			{
 				$this->BeginOrderByState();
+				$this->SetOrderSize();
 				//Mutex::lock($this->updateDrinkLock);
 				$this->VerifyDrinkAvailable();
 				//Mutex::unlock($this->updateDrinkLock);
@@ -131,9 +139,7 @@ these can both be changed
 		}
 		
 		private function StartMixedOrder()
-		{
-			//throw new Exception('Here is the drinkName round 2: ' . $this->drinkName);
-			
+		{			
 			if (!$this->drinkName)
 			{
 				throw new Exception("Ordering a mixedDrink requires a name.");
@@ -141,7 +147,14 @@ these can both be changed
 			
 			if (strstr($this->drinkName, 'Eric\'s Jamaican Surprise'))
 			{
-				$this->drinkName = $this->GetRandomMixedDrink();
+				if (strstr($this->drinkName, 'Non-Alcoholic'))
+				{
+					$this->drinkName = $this->GetRandomNonAlcoholicDrink();
+				}
+				else
+				{
+					$this->drinkName = $this->GetRandomMixedDrink();
+				}
 			}
 			
 			$this->GetComponentsOfDrink();
@@ -172,7 +185,7 @@ these can both be changed
 		
 		private function GetComponentsOfDrink()
 		{			
-			//SELECT name, ingredients, volume FROM mixed WHERE name="{name}"			
+			//SELECT name, ingredients, volume FROM mixed WHERE name="{name}"
 			$queryResult = $this->database->StartQuery()
 				->select('ingredients', 'volume')
 				->from(Database::MixedTable, 'u')
@@ -183,7 +196,7 @@ these can both be changed
 			// Verify correct use of empty() to determine no results
 			if (empty($queryResult))
 			{
-				throw new Exception('GetComponentsOfDrink query failed.');
+				throw new Exception('GetComponentsOfDrink query failed for ' . $this->drinkName . '.');
 			}
 			
 			$this->CreateMapFromQuery($queryResult);
@@ -202,14 +215,19 @@ these can both be changed
 			$this->namesToVolumesMap = array_combine($componentListArray, $volumeListArray);
 		}
 		
-		private function GetRandomMixedDrink()
+		private function GetRandomNonAlcoholicDrink()
+		{
+			return $this->GetRandomMixedDrink('=');
+		}
+		
+		private function GetRandomMixedDrink($proofSymbol = '>')
 		{
 			//SELECT name, ingredients, volume FROM mixed WHERE isOnTable>0 AND proof=0/1 ORDER BY RANDOM() LIMIT 1
 			$queryResult = $this->database->StartQuery()
 				->select('name')
 				->from(Database::MixedTable, 'u')
 				->where('isOnTable > 0')
-				->andWhere('proof > 0')
+				->andWhere("proof $proofSymbol 0")
 				->orderBy('RANDOM()')
 				->setMaxResults(1)
 				->execute()
@@ -245,6 +263,15 @@ these can both be changed
 			
 			// verify syntax
 			return $queryResult;
+		}
+		
+		private function SetOrderSize()
+		{
+			foreach ($this->namesToVolumesMap as $key => $volume)
+			{
+				$this->namesToVolumesMap[$key] *= $this->amountToPourInMl / 175;
+				$this->namesToVolumesMap[$key] = ceil($this->namesToVolumesMap[$key]);
+			}
 		}
 		
 		private function VerifyDrinkAvailable()

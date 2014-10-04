@@ -7,15 +7,6 @@
 	{
 		$drinkType = $_GET['orderType'];
 		$drinkName = $_GET['drinkName'];
-	
-		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
-		{
-			if ($_SESSION['orderStatus'] == 'about_to_order')
-			{
-				$file = file("CustomDrinkNames.txt");
-				$_SESSION['drinkName'] = $file[rand(0, count($file) - 1)];
-			}
-		}
 		
 		$text = '';
 		
@@ -39,6 +30,27 @@
 		return $text;
 	}
 
+	function GetDrinkName()
+	{
+		if (isset($_SESSION['drinkName']))
+		{
+			return $_SESSION['drinkName'];
+		}
+		
+		$drinkType = $_GET['orderType'];
+		$drinkName = $_GET['drinkName'];
+
+		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
+		{
+			$file = file("CustomDrinkNames.txt");
+			$drinkName = $file[rand(0, count($file) - 1)];
+		}
+		
+		$_SESSION['drinkName'] = $drinkName;
+		
+		return $drinkName;
+	}
+
 	function IsFreeToOrder()
 	{
 		return !isset($_SESSION['orderStatus']) || $_SESSION['orderStatus'] == 'free_to_order';
@@ -51,18 +63,14 @@
 
 	function PlaceOrder($drinkName, $drink, $drinkType)
 	{
-		if (isset($_GET['drinkAmount']))
-		{
-			$drinkAmount = $_GET['drinkAmount'];
-		}
-		else
-			$drinkAmount = "full";
+		$drinkAmount = GetDrinkAmount();
 
 		$order = new Order();
 
 		if ($drinkType == 'Mixed')
 		{
 			$order->Mixed()
+				->SetAmountToPour($drinkAmount)
 				->Name($drinkName);
 		}
 		else if ($drinkType == 'Shot')
@@ -104,7 +112,7 @@
 				$namesToPartsMap[$drinkName] = 0;
 			}
 			
-			$namesToPartsMap += $parts;
+			$namesToPartsMap[$drinkName] += $parts;
 		}
 
 		foreach($namesToPartsMap as $name => $part)
@@ -114,5 +122,34 @@
 		}
 
 		return $namesToVolumesMap;
+	}
+	
+	function GetDrinkAmount()
+	{
+		$drinkAmount = 175;
+		
+		if (isset($_GET['drinkAmount']))
+		{
+			$drinkAmountString = $_GET['drinkAmount'];
+		}
+		else
+		{
+			$drinkAmountString = 'full';
+		}
+		
+		switch ($drinkAmountString)
+		{
+			case ('full'):
+				$drinkAmount = 175;
+				break;
+			case ('half'):
+				$drinkAmount = 95;
+				break;
+			case ('taste'):
+				$drinkAmount = 50;
+				break;
+		}
+		
+		return $drinkAmount;
 	}
 ?>
