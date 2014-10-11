@@ -13,13 +13,13 @@
 	<meta name="description" content="" />
 	<meta name="keyword" content="" />
 	<link href="http://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic" rel="stylesheet" type="text/css" />
-	<script src="/../js/jquery.min.js"></script>
-	<script src="/../js/skel.min.js"></script>
-	<script src="/../js/init.js"></script>
-	<script src="/../js/newOrderJS.js"></script>
-	<link rel="stylesheet" href="/../css/skel-noscript.css" />
-	<link rel="stylesheet" href="/../css/style.css" />
-	<link rel="stylesheet" href="/../css/style-wide.css" />
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/skel.min.js"></script>
+	<script src="../js/init.js"></script>
+	<script src="../js/newOrderJS.js"></script>
+	<link rel="stylesheet" href="../css/skel-noscript.css" />
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="../css/style-wide.css" />
 </head>
 <body>
 	<!-- Main Screen -->
