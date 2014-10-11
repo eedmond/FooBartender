@@ -2,6 +2,7 @@
 	ini_set('display_errors',1);
 	ini_set('display_startup_errors',1);
 	require_once(dirname(__FILE__).'/Orders/login_head.php');
+	require_once(dirname(__FILE__).'/indexFunctions.php');
 ?>
 
 <!DOCTYPE HTML>
@@ -18,6 +19,7 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/init.js"></script>
 		<script src="js/indexJS.js"></script>
+		<?php MobileOnlyIncludes(); ?>
 
 		<!-- bxSlider Javascript file -->
 		<script src="jquery.bxslider/jquery.bxslider.min.js"></script>

@@ -49,8 +49,12 @@ $(document).ready(function(){
 		$('.bx-prev').hide();
 		$('.bx-next').hide();
 		$('.mobilenav').show();
-		$('.slider').bxSlider({
+		/*$('.slider').bxSlider({
 			captions: true
+		});*/
+		$(".orderIcon").click(function() {
+			$(this).stop(true, true);
+			MobileClickFunction($(this).attr('id'), $(this));
 		});
 	}
 	else
@@ -65,7 +69,8 @@ $(document).ready(function(){
 				{
 					$('#NavTool').fadeIn();
 				}
-			} else
+			}
+			else
 			{
 				if ($('#NavTool').is(":visible"))
 				{
@@ -110,8 +115,6 @@ function MouseEnter(type, element)
 	element.fadeTo("slow", 1);
 	$(descText).html(element.attr('name').replace(/\n/g, "<br />"));
 	$(descText).fadeIn("slow");
-	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-		element.trigger("click");
 }
 
 function MouseLeave(type, element)
@@ -187,6 +190,8 @@ function ClickFunction(type, element)
 function MobileClickFunction(type, element)
 {
 	element.addClass("selected");
+	
+	$.prompt(element.attr('name').replace(/\n/g, "<br />"));
 }
 
 function FreeSession()

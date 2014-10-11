@@ -154,9 +154,24 @@
 				success: function(data) {
 					//We could potentially put debugging statements here for a failed ClearQueue
 					$('#clearQueueDebug').html(data);
-					//location.reload();
+					location.reload();
 				},
-				async: false
+				async: true
+			});
+		}
+		
+		function clearFromQueue(stationIndex)
+		{
+			$.ajax({
+				url: 'Utilities/ClearQueue.php',
+				type: 'get',
+				success: function(data) {
+					//We could potentially put debugging statements here for a failed ClearQueue
+					$('#clearQueueDebug').html(data);
+					location.reload();
+				},
+				async: true,
+				data: { station: stationIndex }
 			});
 		}
 		</script>
@@ -354,7 +369,8 @@
 									<?php echo $row['orderString'] ?>
 								</div>
 								<div class="table_c3" style="padding: 0px;">
-									<a class="button table_button">X</a>
+									<a class="button table_button" 
+										onclick="javascript:clearFromQueue( <?php echo $row['station']; ?> )">X</a>
 								</div>
 							</div>
 					<?php

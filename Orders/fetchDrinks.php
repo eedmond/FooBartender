@@ -134,6 +134,7 @@
 		echo '" >';
 			
 		echo "<img src='../images/Drinks/$image.jpg' alt='FixThis' title=\"$drinkName\" />";
+		echo "<div class=\"caption1\">$drinkName</div>";
 		echo '</a>';
 		echo '</div>';
 		

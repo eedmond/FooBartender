@@ -9,11 +9,14 @@ class QueueManager
 		$database = new Database();
 		$results = $database->StartQuery()
 			->select('orderString')
-			->where('station = $station')
+			->from(Database::QueueTable, 'u')
+			->where('station = '. $station)
 			->execute()
 			->fetchColumn();
-			
-		$volumes = explode('|', $results[0]);
+		
+		var_dump($results);
+		
+		$volumes = explode('|', $results);
 		$this->AddVolumesBackIn($volumes, $database);
 		
 		//Delete from queue
@@ -23,6 +26,12 @@ class QueueManager
 			->update(Database::StationsTable)
 			->set('amount', 0)
 			->where('station = $station')
+			->execute();
+			
+		$database->StartQuery()
+			->update(Database::StationsTable)
+			->set('amount', 0)
+			->where('station = ' . $station)
 			->execute();
 
 	}
@@ -37,11 +46,19 @@ class QueueManager
 			->fetchAll();
 		
 		$volumes = array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+		$count = count($volumes);
 		
 		foreach ($results as $row)
 		{
 			$parts = explode('|', $row['orderString']);
-			$volumes += $parts;
+			
+			if (count($parts) != $count)
+				throw new Exception("order string is the wrong size: " . $row['orderString']);
+			
+			for($i = 0; $i < $count; $i++)
+			{
+				$volumes[$i] += $parts[$i];
+			}
 		}
 		
 		$this->AddVolumesBackIn($volumes, $database);
@@ -56,27 +73,24 @@ class QueueManager
 	}
 
 	private function AddVolumesBackIn($addVolumesArray, $database = null)
-	{
-		echo "Starting to Add Volumes!";
-		
+	{	
 		if ($database == null)
 			$database = new Database();
 			
-		$index = 0;
+		$index = -1;
 		foreach ($addVolumesArray as $newVolume)
 		{ 
-			echo "Adding volume: " . $newVolume;
+			$index++;
 			
 			if ($newVolume == 0)
 				continue;
 		
-			$database->StartQuery()
+			$query = $database->StartQuery()
 				->update(Database::SingleTable)
 				->set('volume', 'volume + ' . $newVolume)
-				->where('station = ' . $i)
+				->where('station = ' . $index)
 				->execute();
 
-			$index++;
 		}
 		
 		$updateMixed = new UpdateDrinkAvailability($database);
