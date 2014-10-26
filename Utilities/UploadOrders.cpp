@@ -104,7 +104,7 @@ void UploadOrders ()
    }
 
 	vector<int> initialContacts;
-	
+
 	//CloseQueue();
 	ReceiveInitialContacts(initialContacts);
 

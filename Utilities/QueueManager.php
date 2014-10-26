@@ -33,7 +33,6 @@ class QueueManager
 			->set('amount', 0)
 			->where('station = ' . $station)
 			->execute();
-
 	}
 
 	function ClearAllQueue()

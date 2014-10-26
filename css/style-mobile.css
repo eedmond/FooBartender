@@ -96,6 +96,7 @@
 
 	.main
 	{
+		margin: 0 !important;
 	}
 	
 		.main > header
@@ -110,7 +111,7 @@
 
 		.main > .content
 		{
-			padding: 3em 20px 3em 20px;
+			padding: 2em 15px 2em 15px;
 		}
 
 			.main > .content h3

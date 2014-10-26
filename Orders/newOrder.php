@@ -19,7 +19,6 @@
 	<script src="../js/newOrderJS.js"></script>
 	<link rel="stylesheet" href="../css/skel-noscript.css" />
 	<link rel="stylesheet" href="../css/style.css" />
-	<link rel="stylesheet" href="../css/style-wide.css" />
 </head>
 <body>
 	<!-- Main Screen -->

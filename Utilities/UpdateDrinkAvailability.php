@@ -7,8 +7,6 @@
 		private $drinkQuery;
 		private $ingredientsSeenList = array();
 		
-		const VOLUME_NOT_SET = -100;
-		
 		function __construct($inDatabase = NULL)
 		{
 			if (!$inDatabase)
@@ -110,7 +108,7 @@
 			
 			if (!$makeQuery)
 			{
-				return;
+				return true;
 			}
 			
 			$queryResult = $queryBuilder->execute()
@@ -119,20 +117,20 @@
 			$drinkAvailable = true;
 			foreach ($queryResult as $ingredientRow)
 			{
+				$ingredientName = $ingredientRow['name'];
 				$currentVolume = $ingredientRow['volume'];
 				$station = $ingredientRow['station'];
 				if ($station < 0)
 				{
 					$currentVolume = 0;
 				}
-				$this->ingredientsSeenList[$name] = $currentVolume;
+				$this->ingredientsSeenList[$ingredientName] = $currentVolume;
 				
 				if (!$drinkAvailable)
 				{
 					continue;
 				}
 				
-				$ingredientName = $ingredientRow['name'];
 				$desiredVolume = $namesToVolumeMap[$ingredientName];
 				
 				if ($currentVolume < $desiredVolume)

@@ -49,9 +49,6 @@ $(document).ready(function(){
 		$('.bx-prev').hide();
 		$('.bx-next').hide();
 		$('.mobilenav').show();
-		/*$('.slider').bxSlider({
-			captions: true
-		});*/
 		$(".orderIcon").click(function() {
 			$(this).stop(true, true);
 			MobileClickFunction($(this).attr('id'), $(this));
@@ -189,9 +186,23 @@ function ClickFunction(type, element)
 
 function MobileClickFunction(type, element)
 {
-	element.addClass("selected");
+	element.addClass('selected');
 	
-	$.prompt(element.attr('name').replace(/\n/g, "<br />"));
+	$.prompt(element.attr('name').replace(/\n/g, '<br />'), {
+		buttons: {"Submit": true, "Cancel": false},
+		submit: function(e,v,m,f)
+		{
+			if(v)
+			{
+				submitDrink(type);
+			}
+			else
+			{
+				$.prompt.close();
+			}
+			element.removeClass('selected');
+		}
+	});
 }
 
 function FreeSession()

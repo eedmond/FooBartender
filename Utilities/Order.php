@@ -300,7 +300,7 @@ these can both be changed
 				if ($station < 0 || $currentVolume < $volumeToPour)
 				{
 					// verify syntax of double backslash to end var name in string
-					throw new Exception("Only $currentVolume\\mL of $componentName remaining. $volumeToPour\\ml required.");
+					throw new Exception("Only $currentVolume mL of $componentName remaining. $volumeToPour mL required.");
 				}
 			}
 			
