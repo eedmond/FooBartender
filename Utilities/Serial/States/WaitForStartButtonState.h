@@ -2,17 +2,21 @@
 #define WAIT_FOR_START_BUTTON_STATE
 
 #include "MoveAndPourState.h"
+#include <cstring>
+#include <algorithm>
+#include <string>
 
 class WaitForStartButtonState : public MoveAndPourState
 {
-  private:	
+  private:
 	char GetInitialContacts();
 	void PullOrdersFromQueue(char initialContacts);
+	void PullStationVolumes();
 
   public:
-	WaitForStartButtonState() : MoveAndPourState() {}
+	WaitForStartButtonState();
+	~WaitForStartButtonState();
 	void Respond();
-	SerialState* NextState();
 };
 
 #endif

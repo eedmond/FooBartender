@@ -2,7 +2,8 @@
 #define SEND_MESSAGE
 
 #include "Message.h"
-#include "SerialPort.h"
+#include "../SerialPort.h"
+#include <cstring>
 
 class SendMessage : public Message
 {
@@ -11,6 +12,6 @@ class SendMessage : public Message
 
   public:
 	void Send();
-}
+};
 
 #endif

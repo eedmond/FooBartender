@@ -1,13 +1,15 @@
 #ifndef SERIAL_STATE
 #define SERIAL_STATE
 
-#include "SerialPort.h"
+#include "../SerialPort.h"
+#include "../Messages/ResponseMessage.h"
 
 class SerialState
 {
   protected:
+	SerialState(char x) : payloadResponseSize(x) {}
 	char payloadResponseSize;
-	Message* response;
+	ResponseMessage* response;
 
   public:
 	virtual void Respond() = 0;

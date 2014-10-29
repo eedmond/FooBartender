@@ -1,17 +1,21 @@
 #include "SerialPort.h"
-#include "Message.h"
-#include "StartState.h"
+#include "./Messages/Message.h"
+#include "./States/StartState.h"
+#include <exception>
+
+using namespace std;
+
+void HandleNextState(SerialState* state);
 
 int main()
 {
-	SerialPort serial;
-	SerialState* state = new StartState(serial);
+	SerialState* state = new StartState();
 
 	try
 	{
 		HandleNextState(state);
 	}
-	catch (Exception e)
+	catch (exception e)
 	{
 		//error handling
 	}
@@ -19,7 +23,7 @@ int main()
 	return 0;
 }
 
-HandleNextState(SerialState* state)
+void HandleNextState(SerialState* state)
 {
 	state->GetResponse();
 	state->Respond();

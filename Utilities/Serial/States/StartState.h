@@ -1,15 +1,17 @@
 #ifndef START_STATE
 #define START_STATE
 
-#include "SerialState.h"
-#include "WaitForStartButtonState.h"
-#include "StartUpMessage.h"
-#include "SerialPort.h"
-
+#ifndef PI_STARTUP_FAILURE
 #define ARDUINO_STARTUP_SUCCESS 0xA0
 #define ARDUINO_STARTUP_FAILURE 0xA1
 #define PI_STARTUP_SUCCESS 0xA2
-#define P1_STARTUP_FAILURE 0xA3
+#define PI_STARTUP_FAILURE 0xA3
+#endif
+
+#include "SerialState.h"
+#include "WaitForStartButtonState.h"
+#include "../Messages/StartUpMessage.h"
+#include "../SerialPort.h"
 
 class StartState : public SerialState
 {
@@ -17,7 +19,7 @@ class StartState : public SerialState
 	bool VerifyResponse();
 
   public:
-	StartState() : payloadResponseSize(0) {}
+	StartState() : SerialState(0) {}
 	void Respond();
 	SerialState* NextState();
 };

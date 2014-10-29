@@ -2,13 +2,13 @@
 
 void SerialState::GetResponse()
 {
-	response = ResponseMessage::WaitForResponse(responseSize);
+	response = ResponseMessage::WaitForResponse(payloadResponseSize);
 	
 	try
 	{
 		response->Verify();
 	}
-	catch (Exception e)
+	catch (exception e)
 	{
 		// TODO
 		// ack for reattempt

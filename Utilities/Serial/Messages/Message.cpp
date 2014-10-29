@@ -1,14 +1,15 @@
 #include "Message.h"
+#include <iostream> //TEMP
 
-char Message::CalculateCheckSum()
+unsigned char Message::CalculateCheckSum()
 {
-	char calculatedSum = 0;
+	unsigned char calculatedSum = 0;
 	
 	calculatedSum ^= destination;
 	calculatedSum ^= messageSize;
 	calculatedSum ^= payloadID;
 
-	for (int i = 0; i < messageSize - 4; ++i)
+	for (int i = 0; i < (int) messageSize - 4; ++i)
 	{
 		calculatedSum ^= payload[i];
 	}

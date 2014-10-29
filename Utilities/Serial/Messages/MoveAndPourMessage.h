@@ -1,15 +1,17 @@
-#ifndef STARTUP_MESSAGE
-#define STARTUP_MESSAGE
+#ifndef MOVE_AND_POUR_MESSAGE
+#define MOVE_AND_POUR_MESSAGE
 
+#ifndef NEXT_MOVE
 #define NEXT_MOVE 0xB1
 #define ORDER_COMPLETE 0xB3
+#endif
 
 #include "SendMessage.h"
 
-class StartUpMessage : public SendMessage
+class MoveAndPourMessage : public SendMessage
 {
   public:
-	StartUpMessage(int code = PI_STARTUP_FAILURE);
-}
+	MoveAndPourMessage();
+};
 
 #endif

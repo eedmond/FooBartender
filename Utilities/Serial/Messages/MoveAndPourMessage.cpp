@@ -1,19 +1,22 @@
 #include "MoveAndPourMessage.h"
+#include "../States/WaitForStartButtonState.h"
 
-MoveAndPourMessage::MoveandPourMessage()
+MoveAndPourMessage::MoveAndPourMessage()
 {
 	destination = 0x01;
 	
-	if (MoveAndPourState::IsOrderCompleted())
+	try
+	{
+		// TODO : Make sure it listens for arduino response on final step!!!!!!!!!!!
+
+		payload = OrderInfo::GetNextOrderString(); // throws exception when order completed
+		messageSize = Message::BaseMessageSize + 33;
+		payloadID = NEXT_MOVE;
+	}
+	catch (exception e)
 	{
 		messageSize = Message::BaseMessageSize;
 		payloadID = ORDER_COMPLETE;
-	}
-	else
-	{
-		messageSize = Message::BaseMessageSize + 33;
-		payloadID = NEXT_MOVE;
-		payload = MoveAndPourState::GetNextOrderString();
 	}
 	
 	checkSum = CalculateCheckSum();
