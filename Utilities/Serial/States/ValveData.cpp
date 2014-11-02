@@ -31,7 +31,7 @@ void ValveData::OpenDatabase()
 	// Open Database
 	int rc = sqlite3_open("/var/www/FB.db", &db);
 	if( rc ){
-		throw exception(); // Could not connect to database
+		throw runtime_error("Could not connect to database");
 	}
 }
 

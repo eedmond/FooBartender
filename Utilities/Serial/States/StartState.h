@@ -10,7 +10,8 @@
 
 #include "SerialState.h"
 #include "WaitForStartButtonState.h"
-#include "../Messages/StartUpMessage.h"
+#include "../Messages/StartUpSendMessage.h"
+#include "../Messages/StartUpResponseMessage.h"
 #include "../SerialPort.h"
 
 class StartState : public SerialState
@@ -19,7 +20,7 @@ class StartState : public SerialState
 	bool VerifyResponse();
 
   public:
-	StartState() : SerialState(0) {}
+	StartState();
 	void Respond();
 	SerialState* NextState();
 };

@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <cstdio>
 #include <wiringSerial.h>
-#include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -13,10 +13,12 @@ class SerialPort
 {
   private:
 	static void OpenConnection();
+	static int fileDescriptor;
 
   public:
-	static int fileDescriptor; // TODO Set back to private later
-	static void Send(char* buffer, int messageSize);
+	~SerialPort();
+	static int GetFileDescriptor();
+	static void Send(const unsigned char* buffer);
 };
 
 #endif

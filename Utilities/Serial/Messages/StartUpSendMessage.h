@@ -1,5 +1,5 @@
-#ifndef STARTUP_MESSAGE
-#define STARTUP_MESSAGE
+#ifndef STARTUP_SEND_MESSAGE
+#define STARTUP_SEND_MESSAGE
 
 #ifndef PI_STARTUP_FAILURE
 #define ARDUINO_STARTUP_SUCCESS 0xA0
@@ -10,12 +10,12 @@
 
 #include "SendMessage.h"
 
-class StartUpMessage : public SendMessage
+class StartUpSendMessage : public SendMessage
 {
   public:
-	StartUpMessage();
+	StartUpSendMessage();
 
-	void SetResult(char code = PI_STARTUP_FAILURE);
+	void SetResult(unsigned char code = PI_STARTUP_FAILURE);
 };
 
 #endif

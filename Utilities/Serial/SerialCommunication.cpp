@@ -1,7 +1,7 @@
 #include "SerialPort.h"
 #include "./Messages/Message.h"
 #include "./States/StartState.h"
-#include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -15,9 +15,10 @@ int main()
 	{
 		HandleNextState(state);
 	}
-	catch (exception e)
+	catch (runtime_error& e)
 	{
 		//error handling
+		cout << "Caught Exception: " << e.what() << endl;
 	}
 	
 	return 0;
@@ -29,7 +30,7 @@ void HandleNextState(SerialState* state)
 	state->Respond();
 	
 	SerialState* nextState = state->NextState();
-	delete state;
-	
+
+	delete state;	
 	return HandleNextState(nextState);
 }

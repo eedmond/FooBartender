@@ -1,16 +1,22 @@
 #include "StartState.h"
 
+StartState::StartState()
+{
+	cout << "Entering startup state" << endl;
+	response = new StartUpResponseMessage();
+}
+
 void StartState::Respond()
 {
-	StartUpMessage message;
+	StartUpSendMessage message;
 	
 	if (VerifyResponse())
 	{
-		message.SetResult((char) PI_STARTUP_SUCCESS);
+		message.SetResult(PI_STARTUP_SUCCESS);
 	}
 	else
 	{
-		message.SetResult((char) PI_STARTUP_FAILURE);
+		message.SetResult(PI_STARTUP_FAILURE);
 	}
 	
 	message.Send();
@@ -18,8 +24,8 @@ void StartState::Respond()
 
 bool StartState::VerifyResponse()
 {
-	char actualDestination = response->destination;
-	char arduinoStartupCode = response->payloadID;
+	unsigned char actualDestination = response->destination;
+	unsigned char arduinoStartupCode = response->payloadId;
 	
 	cout << "destination: " << hex << (int) actualDestination << endl;
 	cout << "startCode: " << hex << (int) arduinoStartupCode << endl;

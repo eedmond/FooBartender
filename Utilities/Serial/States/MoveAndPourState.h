@@ -3,7 +3,8 @@
 
 #include "SerialState.h"
 #include "OrderInfo.h"
-#include "../Messages/MoveAndPourMessage.h"
+#include "../Messages/MoveAndPourSendMessage.h"
+#include "../Messages/MoveAndPourResponseMessage.h"
 #include <vector>
 #include <sqlite3.h>
 #include <cstring>
@@ -17,7 +18,7 @@ class MoveAndPourState : public SerialState
 	void CreateMessage();
 
   public:
-	MoveAndPourState(int payloadResponseSize = 32) : SerialState(payloadResponseSize) {}
+	MoveAndPourState();
 	void Respond();
 	SerialState* NextState();
 };

@@ -1,7 +1,7 @@
-#ifndef WAIT_FOR_START_BUTTON_STATE
-#define WAIT_FOR_START_BUTTON_STATE
+#pragma once
 
 #include "MoveAndPourState.h"
+#include "../Messages/WaitForStartButtonResponseMessage.h"
 #include <cstring>
 #include <algorithm>
 #include <string>
@@ -18,5 +18,3 @@ class WaitForStartButtonState : public MoveAndPourState
 	~WaitForStartButtonState();
 	void Respond();
 };
-
-#endif

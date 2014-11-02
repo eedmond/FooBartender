@@ -21,8 +21,8 @@ void OrderInfo::Initialize(char initialContacts)
 
 unsigned char* OrderInfo::GetNextOrderString()
 {
-	unsigned char* payload = new unsigned char [33];
 	int stationToMove = GetNextStationToVisit();
+	unsigned char* payload = new unsigned char [33];
 	bool nonZeroValueFound = false;
 
 	payload[0] = stationToMove;
@@ -40,12 +40,20 @@ unsigned char* OrderInfo::GetNextOrderString()
 			nonZeroValueFound = true;
 		}
 		
-		delete[] timeToPour;
+		if (timeToPour != nullptr)
+		{
+			delete[] timeToPour;
+			timeToPour = nullptr;
+		}
 	}
 	
 	if (!nonZeroValueFound)
 	{
-		delete[] payload;
+		if (payload != nullptr)
+		{
+			delete[] payload;
+			payload = nullptr;
+		}
 		return GetNextOrderString();
 	}
 
@@ -66,7 +74,7 @@ int OrderInfo::GetNextStationToVisit()
 {
 	if (stationsToVisit.empty())
 	{
-		throw exception(); // No More Stations To Move To
+		throw runtime_error("No more stations to move to");
 	}
 	int nextStation =  stationsToVisit.back();
 	stationsToVisit.pop_back();

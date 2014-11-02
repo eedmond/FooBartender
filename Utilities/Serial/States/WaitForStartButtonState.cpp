@@ -2,7 +2,7 @@
 
 WaitForStartButtonState::WaitForStartButtonState()
 {
-	payloadResponseSize = 1;
+	response = new WaitForStartButtonResponseMessage();
 }
 
 void WaitForStartButtonState::Respond()

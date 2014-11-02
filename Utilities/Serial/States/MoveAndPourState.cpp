@@ -2,6 +2,12 @@
 #include "WaitForStartButtonState.h"
 #include <iostream> //TEMP
 
+MoveAndPourState::MoveAndPourState()
+{
+	response = new MoveAndPourResponseMessage();
+}
+
+
 void MoveAndPourState::Respond()
 {
 	unsigned char* timesPoured = response->payload;
@@ -12,7 +18,7 @@ void MoveAndPourState::Respond()
 
 void MoveAndPourState::CreateMessage()
 {
-	MoveAndPourMessage message;
+	MoveAndPourSendMessage message;
 	message.Send();
 }
 

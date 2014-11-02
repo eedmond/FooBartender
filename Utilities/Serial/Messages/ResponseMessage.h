@@ -1,11 +1,11 @@
-#ifndef RESPONSE_MESSAGE
-#define RESPONSE_MESSAGE
+#pragma once
 
 #include "Message.h"
+#include "SendMessage.h"
 #include "../SerialPort.h"
 #include <iostream>
+#include <unistd.h>
 #include <poll.h>
-#define MESSAGE_TIMEOUT_SECONDS 3
 
 using namespace std;
 
@@ -13,15 +13,25 @@ typedef struct pollfd pollfd;
 
 class ResponseMessage : public Message
 {
-  public:
-	static ResponseMessage* WaitForResponse(unsigned char payloadResponseSize);
-	static bool ValidPayload(unsigned char payloadID, unsigned char payloadSize);
-	void Verify();
-	
-  private:
-	static bool WaitAndGrabData(pollfd& parameters, unsigned char* buffer, unsigned char messageSize);
-	static ResponseMessage* ConstructResponse(unsigned char* message, unsigned char messageSize, unsigned char payloadSize);
-	static void SendResendMessage();
-};
+  protected:
+	static unsigned char PayloadIdToSize(unsigned char payloadId);
+	void ConstructResponse(pollfd& parameters);
+	static void WaitForDataAvailable(pollfd& parameters, int timeOut);
+	void VerifyHeader();
+	void VerifyCheckSum();
+	void BuildAndVerifyDestination(int nextByte);
+	void BuildMessageSizeByte(int nextByte);
+	void BuildPayloadIdByte(int nextByte);
+	void AddToPayload(int nextByte, int payloadIndex);
+	void BuildCheckSumByte(int nextByte);
+	void HandleResendRequest();
+	void RequestResendMessage();
+	virtual void HandleUnexpectedResponse() = 0;
 
-#endif
+	unsigned char expectedPayloadId;
+	unsigned char expectedPayloadSize;
+	int messageTimeoutMilliseconds;
+
+  public:
+	void WaitForResponse();
+};
