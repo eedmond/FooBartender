@@ -26,6 +26,7 @@
 		<script src="js/jquery.min.js"></script>
 		<script src="js/skel.min.js"></script>
 		<script src="js/init.js"></script>
+		<script src="js/adminPortalJS.js"></script>
 
 		<!-- bxSlider Javascript file -->
 		<script src="jquery.bxslider/jquery.bxslider.min.js"></script>
@@ -33,7 +34,7 @@
 		<link href="jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
 
 		<style type="text/css">
-			.table, .table_first, .table_c1, .table_c2, .table_c3
+			.table, .table_first, .table_c1, .table_c2, .table_c3, .table_c4
 			{
 				height: 40px;
 				display: inline;
@@ -62,6 +63,11 @@
 			{
 				width: 10%;
 			}
+			
+			.table_c4
+			{
+				width: 30%;
+			}
 
 			a.button.table_button
 			{
@@ -70,7 +76,17 @@
 				margin: 0px;
 				padding 0px;
 				padding-top: 2px;
+				padding-left: 0px;
+				padding-right: 0px;
 				vertical-align: middle;
+			}
+			
+			input.table_textbox
+			{
+				width: 90%;
+				height: 95%;
+				margin-left: 3px;
+				margin-top: 1px;
 			}
 		</style>
 		
@@ -83,98 +99,7 @@
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 	</head>
-				<ul id="NavTool" class="navbar">
-					<li><a href="#TableSetup" class="scrolly fa solo"><img src="images/Categories/Tablethumb.png" alt="Mixed Image"><span>Twitter</span></a></li>
-					<li><a href="#ManageDrinks" class="scrolly fa solo"><img src="images/Categories/shot.png" alt="Shot Image"><span>Facebook</span></a></li>
-					<li><a href="#ManageQueue" class="scrolly fa solo"><img src="images/Categories/nonalcoholic.png" alt="Non-Alcoholic Image"><span>Google+</span></a></li>
-					<li><a href="#ManageErrors" class="scrolly fa solo"><img src="images/Categories/customdrink.png" alt="Custom Image"><span>Dribbble</span></a></li>
-				</ul>
 	<body>
-	<!-- Necessary Functions -->
-		<script>
-		$(document).ready(function(){
-			$(window).scroll(function(){
-				if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-					return;
-				var posFromTop = $(window).scrollTop();
-
-				if(posFromTop+1 > $('#Mixed').offset().top){
-					if (!$('#NavTool').is(":visible"))
-						$('#NavTool').fadeIn();
-				} 
-				else {
-					if ($('#NavTool').is(":visible"))
-						$('#NavTool').fadeOut();
-				}
-			});
-		});
-
-
-		function FreeSession()
-		{
-			xmlhttp=new XMLHttpRequest();
-			xmlhttp.open("GET", "session_free.php", false);
-			xmlhttp.send();
-		}
-
-		var customCounter = 0;
-		function onPlusClick() {
-			customCounter = customCounter + 1;
-			var textID = "text" + customCounter;
-			var partsID = "parts" + customCounter;
-			var plusID = "plus" + customCounter;
-			var prevPlusID = "plus" + (customCounter - 1);
-			var textDOM = document.getElementsByName(textID)[0];
-			var partsDOM = document.getElementsByName(partsID)[0];
-			var plusDOM = document.getElementsByName(plusID)[0];
-			var prevPlusDOM = document.getElementsByName(prevPlusID)[0].style.display="none";
-			$(textDOM).fadeTo("slow", 1);
-			$(partsDOM).fadeTo("slow", 1);
-			$(plusDOM).fadeIn("slow");
-		}
-
-
-		function onClearClick() {
-			while (customCounter > 0) {
-				var textID = "text" + customCounter;
-				var partsID = "parts" + customCounter;
-				var plusID = "plus" + customCounter;
-				document.getElementsByName(textID)[0].style.display="none";
-				document.getElementsByName(partsID)[0].style.display="none";
-				document.getElementsByName(plusID)[0].style.display="none";
-				customCounter = customCounter - 1;
-			}
-			document.getElementsByName("plus0")[0].style.display="inline";
-		}
-
-		function clearEntireQueue() {
-			$.ajax({
-				url: 'Utilities/ClearQueue.php',
-				type: 'get',
-				success: function(data) {
-					//We could potentially put debugging statements here for a failed ClearQueue
-					$('#clearQueueDebug').html(data);
-					location.reload();
-				},
-				async: true
-			});
-		}
-		
-		function clearFromQueue(stationIndex)
-		{
-			$.ajax({
-				url: 'Utilities/ClearQueue.php',
-				type: 'get',
-				success: function(data) {
-					//We could potentially put debugging statements here for a failed ClearQueue
-					$('#clearQueueDebug').html(data);
-					location.reload();
-				},
-				async: true,
-				data: { station: stationIndex }
-			});
-		}
-		</script>
 		<!-- Main -->
 			<section id="Main" class="main">
 				<header>
@@ -237,6 +162,7 @@
 				<div class="content dark style2">
 					<div class="header">
 						<div align="center">Setup which drinks are on the table and where</div>
+						<div id="setVolumeDebug"></div>
 					</div>
 					<br/>
 					<div class="header" align="center">
@@ -245,7 +171,8 @@
 					<div>
 						<div class="table_c3 table_first">Station</div>
 						<div class="table_c1">Name</div>
-						<div class="table_c2">Volume</div>
+						<div class="table_c4">Volume</div>
+						<div class="table_c3">Edit</div>
 					</div>
 					<?php
 						$results = $database->StartQuery()
@@ -264,7 +191,14 @@
 							<div>
 								<div class="table_c3 table_first"><?php echo $row['station']; ?></div>
 								<div class="table_c1"><?php echo $row['name']; ?></div>
-								<div class="table_c2"><?php echo $row['volume']; ?></div>
+								<div class="table_c4">
+									<span class="swapOn"><?php echo $row['volume']; ?></span>
+									<input class="swapOff table_textbox" type="text" style="display: none;"/>
+								</div>
+								<div class="table_c3">
+									<a class="button table_button swapOn" onclick="javascript:swapIn(this)">Edit</a>
+									<a class="button table_button swapOff" onclick="javascript:updateStationVolume(this)" style="display: none;" onclick="">Done</a>
+								</div>
 							</div>
 					<?php
 						}

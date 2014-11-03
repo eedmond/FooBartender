@@ -162,10 +162,6 @@ void ResponseMessage::WaitForDataAvailable(pollfd& parameters, int timeOut)
 void ResponseMessage::VerifyHeader()
 {
 	cout << "Header Poll Complete" << endl;
-	if (this->destination != 0x3A)
-	{
-		throw runtime_error("Incorrect Destination Address");
-	}
 	unsigned char validSize = PayloadIdToSize(this->payloadId) + BaseMessageSize;
 
 	if (validSize != this->messageSize || this->messageSize == -1)
@@ -197,6 +193,10 @@ void ResponseMessage::BuildAndVerifyDestination(int nextByte)
 {
 	this->destination = nextByte;
 	cout << "destination = " << hex << (int) nextByte << endl;
+	if (this->destination != 0x3A)
+	{
+		throw runtime_error("Incorrect Destination Address");
+	}
 }
 
 void ResponseMessage::BuildMessageSizeByte(int nextByte)

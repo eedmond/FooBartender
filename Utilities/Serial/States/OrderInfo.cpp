@@ -1,16 +1,19 @@
 #include "OrderInfo.h"
 
 vector<int> OrderInfo::stationsToVisit;
+bool OrderInfo::orderComplete;
 
 void OrderInfo::Initialize(char initialContacts)
 {
 	srand (int (time(0)));
 	valveData.Initialize(initialContacts);
+	orderComplete = false;
 
-	if (stationsToVisit.size() != 8)
+	stationsToVisit.clear();
+
+	for (int i = 0; i < 8; ++i)
 	{
-		stationsToVisit.clear();
-		for (int i = 0; i < 8; ++i)
+		if (valveData.IsStationValid(i))
 		{
 			stationsToVisit.push_back(i);
 		}
@@ -19,11 +22,15 @@ void OrderInfo::Initialize(char initialContacts)
 	random_shuffle (stationsToVisit.begin(), stationsToVisit.end(), Randomize);
 }
 
+bool OrderInfo::ExistsStationToMove()
+{
+	return !stationsToVisit.empty();
+}
+
 unsigned char* OrderInfo::GetNextOrderString()
 {
 	int stationToMove = GetNextStationToVisit();
 	unsigned char* payload = new unsigned char [33];
-	bool nonZeroValueFound = false;
 
 	payload[0] = stationToMove;
 
@@ -35,34 +42,24 @@ unsigned char* OrderInfo::GetNextOrderString()
 		payload[index] = timeToPour[0];
 		payload[index + 1] = timeToPour[1];
 		
-		if (payload[index] != 0 || payload[index + 1] != 0)
-		{
-			nonZeroValueFound = true;
-		}
-		
 		if (timeToPour != nullptr)
 		{
 			delete[] timeToPour;
 			timeToPour = nullptr;
 		}
 	}
-	
-	if (!nonZeroValueFound)
-	{
-		if (payload != nullptr)
-		{
-			delete[] payload;
-			payload = nullptr;
-		}
-		return GetNextOrderString();
-	}
 
 	return payload;
 }
 
+void OrderInfo::OrderCompleted()
+{
+	orderComplete = true;
+}
+
 bool OrderInfo::IsOrderCompleted()
 {
-	return stationsToVisit.empty();
+	return orderComplete;
 }
 
 void OrderInfo::UpdateVolumes(unsigned char* timesPoured)
@@ -72,10 +69,6 @@ void OrderInfo::UpdateVolumes(unsigned char* timesPoured)
 
 int OrderInfo::GetNextStationToVisit()
 {
-	if (stationsToVisit.empty())
-	{
-		throw runtime_error("No more stations to move to");
-	}
 	int nextStation =  stationsToVisit.back();
 	stationsToVisit.pop_back();
 	

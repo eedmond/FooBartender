@@ -3,19 +3,19 @@
 MoveAndPourSendMessage::MoveAndPourSendMessage()
 {
 	destination = 0x01;
-
-	try
+	
+	if (OrderInfo::ExistsStationToMove())
 	{
-		payload = OrderInfo::GetNextOrderString(); // throws exception when order completed
+		payload = OrderInfo::GetNextOrderString();
 		messageSize = Message::BaseMessageSize + 33;
 		payloadId = NEXT_MOVE;
 	}
-	catch (runtime_error& e)
+	else
 	{
 		payload = nullptr;
-		cout << "Caught exception: " << e.what() << endl;
 		messageSize = Message::BaseMessageSize;
 		payloadId = ORDER_COMPLETE;
+		OrderInfo::OrderCompleted();
 	}
 
 	checkSum = CalculateCheckSum();

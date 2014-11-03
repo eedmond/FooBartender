@@ -32,6 +32,7 @@ class ValveData
 
   public:
 	static void Initialize(unsigned char initialContacts);
+	static bool IsStationValid(int station);
 	static unsigned char* PourNextValveAtStation(int stationToMove, int valve);
 	static void UpdateVolumes(unsigned char* timesPoured);
 	static void UploadBackToDatabase();
