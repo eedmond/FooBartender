@@ -75,9 +75,14 @@ function swapIn(button)
 	var volumeDiv = parentDiv.siblings("div.table_c4");
 	var input = volumeDiv.children(".swapOff");
 	var valueSpan = volumeDiv.children(".swapOn");
-	
 	var currentValue = valueSpan.html();
 	
+	var superParent = parentDiv.parents(".content");
+	var swapOns = superParent.find(".swapOn");
+	var swapOffs = superParent.find(".swapOff");
+	
+	swapOffs.hide();
+	swapOns.show();
 	
 	thisButton.hide();
 	nextButton.show();
@@ -114,6 +119,11 @@ function updateStationVolume(button)
 	var value = div.children("input").val();
 	var prevValue = div.children("span").html();
 	
+	if (value == prevValue)
+	{
+		swapOut(button);
+		return;
+	}
 	
 	
 	

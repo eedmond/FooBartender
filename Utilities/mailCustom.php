@@ -1,5 +1,5 @@
 <?php
-	exec("python functions/send_mail.py \"New message from " . addslashes($_POST["Name"]) . "\" \"" . addslashes($_POST["message"]) . "\n\nReply to " . addslashes($_POST["Email"]) . "\"");
+	exec("python send_mail.py \"New message from " . addslashes($_POST["Name"]) . "\" \"" . addslashes($_POST["message"]) . "\n\nReply to " . addslashes($_POST["Email"]) . "\"");
 ?>
 <html>
 	<head>

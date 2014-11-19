@@ -14,6 +14,8 @@
 			->set('rating', "rating + $rating")
 			->where("name = \"$drinkName\"")
 			->execute();
+		
+		$_SESSION['drinkRated'] = '1';
 	}
 	
 	function SettingsInitialized()

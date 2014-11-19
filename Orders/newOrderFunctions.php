@@ -15,8 +15,12 @@
 		{
 			$_SESSION['orderStatus'] = 'already_ordered';
 			$_POST = $_SESSION['post-data'];
-			$text = PlaceOrder($drinkName, $drinkType, $drinkType);
+			$order = PlaceOrder($drinkName, $drinkType);
+			$text = $order->GetResultString();
 			$_SESSION['text'] = $text;
+			$_SESSION['ORDER_SUCCESS'] = $order->WasSuccessful();
+			$_SESSION['drinkName'] = $order->DrinkOrdered();
+			$_SESSION['orderId'] = $order->GetOrderId();
 		}
 		else
 		{
@@ -32,36 +36,52 @@
 
 	function GetDrinkName()
 	{
-		if (isset($_SESSION['drinkName']))
+		if (isset($_SESSION['drinkDisplayName']))
 		{
-			return $_SESSION['drinkName'];
+			return $_SESSION['drinkDisplayName'];
 		}
 		
 		$drinkType = $_GET['orderType'];
-		$drinkName = $_GET['drinkName'];
+		$drinkDisplayName = $_GET['drinkName'];
 
-		if ($drinkType == 'Custom' || strstr($drinkName, 'Eric\'s Jamaican Surprise'))
+		if ($drinkType == 'Custom' || strstr($drinkDisplayName, 'Eric\'s Jamaican Surprise'))
 		{
-			$file = file("CustomDrinkNames.txt");
-			$drinkName = $file[rand(0, count($file) - 1)];
+			$file = file("Orders/CustomDrinkNames.txt");
+			$drinkDisplayName = $file[rand(0, count($file) - 1)];
 		}
 		
-		$_SESSION['drinkName'] = $drinkName;
+		$_SESSION['drinkDisplayName'] = $drinkDisplayName;
 		
-		return $drinkName;
+		return $drinkDisplayName;
 	}
 
 	function IsFreeToOrder()
 	{
 		return !isset($_SESSION['orderStatus']) || $_SESSION['orderStatus'] == 'free_to_order';
 	}
+	
+	function IsOrderClearable()
+	{
+		return !isset($_SESSION['orderCleared']) || $_SESSION['orderCleared'] != '1';
+	}
 
 	function IsRatableDrink($drinkName)
 	{
-		return $_GET['orderType'] == 'Mixed' && !strstr($drinkName, 'Eric\'s Jamaican Surprise');
+		// Disallow ratings for drinks whose orders did not work
+		if (isset($_SESSION['ORDER_SUCCESS']) && $_SESSION['ORDER_SUCCESS'] == '0')
+		{
+			return false;
+		}
+		
+		// Disallow ratings if drink has been rated
+		if (isset($_SESSION['drinkRated']) && $_SESSION['drinkRated'] == '1')
+		{
+			return false;
+		}
+		return $_GET['orderType'] == 'Mixed';
 	}
 
-	function PlaceOrder($drinkName, $drink, $drinkType)
+	function PlaceOrder($drinkName, $drinkType)
 	{
 		$drinkAmount = GetDrinkAmount();
 
@@ -85,9 +105,9 @@
 				->SetOrderData($namesToVolumesMap);
 		}
 		
-		$resultString = $order->Place();
+		$order->Place();
 		
-		return $resultString;
+		return $order;
 	}
 	
 	function GenerateNamesToVolumesMap()

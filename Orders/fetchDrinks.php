@@ -13,6 +13,7 @@
 		$query->select('*')
 			->from(Database::MixedTable)
 			->where('proof > 0')
+			->andWhere('isOnTable != 0')
 			->orderBy('rating / numRatings', 'DESC');
 	}
 	else if ($drinkType == "nonAlcoholic")
@@ -21,6 +22,7 @@
 		$query->select('*')
 			->from(Database::MixedTable)
 			->where('proof = 0')
+			->andWhere('isOnTable != 0')
 			->orderBy('rating / numRatings', 'DESC');
 	}
 	else if ($drinkType == "shot")
@@ -28,8 +30,9 @@
 		$defaultImage = "shotdefault";
 		$query->select('*')
 			->from(Database::SingleTable)
-			->where('proof > 25')
-			->andwhere('volume >= 35');
+			->where('proof > 10')
+			->andWhere('volume >= 35')
+			->andWhere('station > -1');
 	}
 
 	$getNames = $query->execute();

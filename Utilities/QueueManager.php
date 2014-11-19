@@ -1,16 +1,16 @@
 <?php
 require_once(dirname(__FILE__) . "/Database.php");
-require_once(dirname(__FILE__) . "/UpdateDrinkAvailability.php");
+require_once(dirname(__FILE__) . "/../Orders/UpdateDrinkAvailability.php");
 
 class QueueManager
-{
-	function ClearOrderOnStation($station)
+{	
+	function ClearOrder($whereStatement)
 	{
 		$database = new Database();
 		$results = $database->StartQuery()
 			->select('orderString')
 			->from(Database::QueueTable, 'u')
-			->where('station = '. $station)
+			->where($whereStatement)
 			->execute()
 			->fetchColumn();
 		
@@ -20,19 +20,17 @@ class QueueManager
 		$this->AddVolumesBackIn($volumes, $database);
 		
 		//Delete from queue
-		$database->ExecuteSql("DELETE from queue where station = ". $station);
-		
-		$database->StartQuery()
-			->update(Database::StationsTable)
-			->set('amount', 0)
-			->where('station = $station')
-			->execute();
-			
-		$database->StartQuery()
-			->update(Database::StationsTable)
-			->set('amount', 0)
-			->where('station = ' . $station)
-			->execute();
+		$database->ExecuteSql("DELETE FROM queue WHERE $whereStatement");
+	}
+	
+	function ClearOrderById($idToClear)
+	{
+		$this->ClearOrder("id = $idToClear");
+	}
+	
+	function ClearOrderOnStation($station)
+	{
+		$this->ClearOrder("station = $station");
 	}
 
 	function ClearAllQueue()
@@ -64,11 +62,6 @@ class QueueManager
 		
 		//Delete from queue
 		$database->ExecuteSql("DELETE from queue");
-			
-		$database->StartQuery()
-			->update(Database::StationsTable)
-			->set('amount', 0)
-			->execute();
 	}
 
 	private function AddVolumesBackIn($addVolumesArray, $database = null)

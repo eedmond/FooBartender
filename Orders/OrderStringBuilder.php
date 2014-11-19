@@ -1,6 +1,6 @@
 <?php
 
-	require_once(dirname(__FILE__).'/Database.php');
+	require_once(dirname(__FILE__).'/../Utilities/Database.php');
 	
 	function BuildOrderString($namesToVolumesMap, $database = NULL)
 	{

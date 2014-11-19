@@ -41,7 +41,7 @@ $(document).ready(function(){
 		minSlides: 1,
 		maxSlides: 1,
 		slideMargin: 10,
-		infiniteLoop: false,
+		infiniteLoop: true,
 	});
 
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
@@ -194,7 +194,14 @@ function MobileClickFunction(type, element)
 		{
 			if(v)
 			{
-				submitDrink(type);
+				if (type == "shot")
+				{
+					submitShot();
+				}
+				else
+				{
+					submitDrink(type);
+				}
 			}
 			else
 			{
@@ -240,7 +247,7 @@ function submitDrink(drinkType)
 		}
 	}
 	$("body").fadeOut(1000);
-	location.href = "Orders/newOrder.php?orderType=Mixed&drinkName=" + mixedName + surpriseType + "&drinkAmount=" + drinkAmount;
+	location.href = "newOrder.php?orderType=Mixed&drinkName=" + mixedName + surpriseType + "&drinkAmount=" + drinkAmount;
 }
 
 function submitShot()
@@ -253,7 +260,7 @@ function submitShot()
 		surpriseType = "|Shot";
 		
 	$("body").fadeOut(1000);
-	location.href = "Orders/newOrder.php?orderType=Shot&drinkName=" + shotName + surpriseType;
+	location.href = "newOrder.php?orderType=Shot&drinkName=" + shotName + surpriseType;
 }
 
 // Custom Drink JS

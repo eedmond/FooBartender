@@ -1,0 +1,77 @@
+
+#tableGui
+{
+}
+
+#tableGui #grid
+{
+	display: inline;
+	float: left;
+	width: 50%;
+	margin-top: 20px;
+}
+
+#tableGui #tableSide
+{
+	display: inline;
+	float: left;
+	width: 50%;
+	margin-top: 20px;
+	/*background: green;*/
+}
+
+#tableGui #grid div.row div.col
+{
+	position: relative;
+	float: left;
+	display: inline;
+	/*border: 2px solid;*/
+	width: 9%;
+	padding: 0px;
+}
+
+#tableGui #grid div.row
+{
+	width: 100%;
+}
+
+div.row .col:first-child
+{
+	margin-left: 5%;
+}
+
+img.stationImage
+{
+	width: 100%;
+	height: auto;
+}
+
+span.stationLabel
+{
+	position: absolute;
+	top: 40%;
+	left: 45%;
+}
+
+div.middleContent
+{
+	position: absolute;
+	width: 600%;
+	background: green;
+}
+
+#fadeBarrier
+{
+	padding: 10px;
+	display: inline-block;
+	position: relative;
+	top: 5px;
+	left: 35%;
+	width: auto;
+	background: orange;
+}
+
+#fadeBarrier input
+{
+	display: block;
+}

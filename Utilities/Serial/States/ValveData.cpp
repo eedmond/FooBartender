@@ -62,7 +62,7 @@ int ValveData::VolumeToTime(int volumeToPour, int currentValveVolume)
 
 	if (t < 0)
 	{
-		t = 10000;
+		t = 0;
 	}
 	int timeToPour = t;
 	return timeToPour;
@@ -178,12 +178,10 @@ int ValveData::PullQueueVolumes(void *data, int argc, char **argv, char **azColN
 void ValveData::PullOrdersFromQueue(unsigned char initialContacts)
 {
 	char sqlSelect[180];
-	char sqlDeleteQueue[180];
-	char sqlDeleteStations[190];
+	char sqlDelete[180];
 
 	strncpy(sqlSelect, "SELECT * FROM queue WHERE 0\0", 28);
-	strncpy(sqlDeleteQueue, "DELETE FROM queue WHERE 0\0", 26);
-	strncpy(sqlDeleteStations, "UPDATE stations SET amount=0 WHERE 0\0", 37);
+	strncpy(sqlDelete, "DELETE FROM queue WHERE 0\0", 26);
 
 	for (char i = 0; i < 8; ++i)
 	{
@@ -193,18 +191,15 @@ void ValveData::PullOrdersFromQueue(unsigned char initialContacts)
 		{
 			strncat(sqlSelect, " OR station=", 18);
 			strncat(sqlSelect, to_string(i).c_str(), 1);
-			strncat(sqlDeleteQueue, " OR station=", 18);
-			strncat(sqlDeleteQueue, to_string(i).c_str(), 1);
-			strncat(sqlDeleteStations, " OR station=", 18);
-			strncat(sqlDeleteStations, to_string(i).c_str(), 1);
+			strncat(sqlDelete, " OR station=", 18);
+			strncat(sqlDelete, to_string(i).c_str(), 1);
 		}
 	}
 
 	cout << "sql: " << sqlSelect << endl;
 
 	sqlite3_exec(db, sqlSelect, PullQueueVolumes, NULL, NULL);
-	sqlite3_exec(db, sqlDeleteQueue, NULL, NULL, NULL);
-	sqlite3_exec(db, sqlDeleteStations, NULL, NULL, NULL);
+	sqlite3_exec(db, sqlDelete, NULL, NULL, NULL);
 }
 
 int ValveData::DatabaseValveVolumesCallback(void *data, int argc, char **argv, char **azColName)

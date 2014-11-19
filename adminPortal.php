@@ -27,69 +27,15 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/init.js"></script>
 		<script src="js/adminPortalJS.js"></script>
+		<script src="js/tableGuiJS.js"></script>
 
 		<!-- bxSlider Javascript file -->
 		<script src="jquery.bxslider/jquery.bxslider.min.js"></script>
 		<!-- bxSlider CSS file -->
 		<link href="jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
 
-		<style type="text/css">
-			.table, .table_first, .table_c1, .table_c2, .table_c3, .table_c4
-			{
-				height: 40px;
-				display: inline;
-				float: left;
-				border-style: solid;
-				border-width: 2px;
-				padding-left: 4px;
-			}
-			
-			.table_first
-			{
-				margin-left: 15%;
-			}
-			
-			.table_c1
-			{
-				width: 25%;
-			}
-			
-			.table_c2
-			{
-				width: 40%;
-			}
-			
-			.table_c3
-			{
-				width: 10%;
-			}
-			
-			.table_c4
-			{
-				width: 30%;
-			}
-
-			a.button.table_button
-			{
-				width: 100%;
-				height: 95%;
-				margin: 0px;
-				padding 0px;
-				padding-top: 2px;
-				padding-left: 0px;
-				padding-right: 0px;
-				vertical-align: middle;
-			}
-			
-			input.table_textbox
-			{
-				width: 90%;
-				height: 95%;
-				margin-left: 3px;
-				margin-top: 1px;
-			}
-		</style>
-		
+		<link href="css/adminPortal.css" rel="stylesheet" />
+		<link href="css/tableGui.css" rel="stylesheet" />
   <!--script src="js/jquery-1.10.2.js"></script-->
 		<noscript>
 			<link rel="stylesheet" href="css/skel-noscript.css" />
@@ -203,6 +149,12 @@
 					<?php
 						}
 					?>
+					
+					<?php
+						require(dirname(__FILE__) . "/TableGui/TableGui.php");
+					?>
+					
+					
 					<div class="container">
 						<div class="row">
 							<ul class="mobilenav" style="padding-left:50%" id="mobilenav">

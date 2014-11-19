@@ -121,7 +121,7 @@
 							<section>
 								<h3>A splash of naughty, a shot of nice, these mixed drinks are just for you!</h3>
 							</section>
-							<div class="hidden drinkDesc" id="MixedDesc">Some test Text</div>
+							<div class="hidden drinkDesc" id="MixedDesc"></div>
 							<section class="hidden drinkButton" id="OrderMixed">
 								<footer>
 									Drink amount:
@@ -231,11 +231,11 @@
 					<div align="center">All the power you could ever ask for is right at your fingertips</div><br>
 				</div>
 				<div class="container small">
-					<form id="customForm" method="post" action="Orders/newOrder.php?orderType=Custom&drinkName=Custom">
+					<form id="customForm" method="post" action="newOrder.php?orderType=Custom&drinkName=Custom">
 						<div class="row">
 							<div class="12u" align="center">
 								<ul class="actions">
-									<li><input type="submit" class="button" value="Order Custom Drink" onclick="javascript:FreeSession();" /></li>
+									<li><input type="submit" class="button" value="Submit Custom Order" onclick="javascript:FreeSession();" /></li>
 									<li><input type="reset" class="button alt" value="Clear Order" onclick="javascript:onClearClick();" /></li>
 								</ul>
 							</div>
@@ -266,7 +266,7 @@
 					<div align="center">Use to form below to give us any feedback or suggestions!</div><br><br>
 				</div>
 				<div class="container small">
-					<form method="post" action="mailCustom.php">
+					<form method="post" action="Utilities/mailCustom.php">
 						<div class="row half">
 							<div class="6u"><input type="text" class="text" placeholder="Your Name" name="Name" /></div>
 							<div class="6u"><input type="text" class="text" placeholder="Your Email" name="Email" /></div>
@@ -310,7 +310,6 @@
 					<li>&copy; Triom Productions, All rights reserved.</li>
 					<li>Design: <a href="http://html5up.net/">HTML5 UP</a></li>
 					<li>Images: Mike Cardoso</li>
-					<li>Special thanks to Ian Blaauw</li>
 				</ul>
 			</div>
 		</section>

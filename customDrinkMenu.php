@@ -26,7 +26,7 @@
 			$valueMargin = '';
 		}
 		
-		echo '<select id="text', $count, '" name="text', $count, '" style="display: ', $displayMode, '">Ingredient<option value=0>Add Drink</option>';
+		echo '<select id="text', $count, '" name="text', $count, '" style="display: ', $displayMode, '">Ingredient<option value=0>Add Ingredient</option>';
 		
 		foreach ($queryResult as $row)
 		{

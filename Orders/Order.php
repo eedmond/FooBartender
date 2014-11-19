@@ -26,7 +26,7 @@ it also does NOT call updateMixed, but
 these can both be changed
 */
 
-	require_once(dirname(__FILE__).'/Database.php');
+	require_once(dirname(__FILE__).'/../Utilities/Database.php');
 	require_once(dirname(__FILE__).'/OrderStringBuilder.php');
 	require_once(dirname(__FILE__).'/UpdateDrinkAvailability.php');
 
@@ -37,7 +37,10 @@ these can both be changed
 		private $orderState = NULL;
 		private $amountToPourInMl = 175;
 		private $namesToVolumesMap = NULL;
+		private $singleComponentsQueryResults = NULL;
 		private $resultString = NULL;
+		private $wasOrderSuccessful = false;
+		private $orderId;
 		
 		//private static $updateDrinkLock = Mutex::create();
 		//private static $grabStationLock = Mutex::create();
@@ -101,19 +104,47 @@ these can both be changed
 				$this->VerifyDrinkAvailable();
 				//Mutex::unlock($this->updateDrinkLock);
 				//Mutex::lock($this->grabStationLock);
-				$station = $this->FindOpenStation();
+				$stationOfOrder = $this->FindOpenStation();
+				$this->PlaceInQueue($stationOfOrder);
+				$this->GetQueueId($stationOfOrder);
+				$this->RemoveOrderFromTable();
 				//Mutex::unlock($this->grabStationLock);
-				$this->PlaceInQueue($station);
-				$this->resultString = "Your order has been placed on station $station";
-				$updater = new UpdateDrinkAvailability();
-				$updater->UpdateAvailableDrinks();
+				$this->resultString = "Your order has been placed on station $stationOfOrder";
+				$this->wasOrderSuccessful = true;
 			}
 			catch (Exception $e)
 			{
 				$this->resultString = 'Order failed with error: ' . $e->getMessage(). ' Please try again.';
+				$this->wasOrderSuccessful = false;
+			}
+
+			$updater = new UpdateDrinkAvailability();
+			$updater->UpdateAvailableDrinks();
+		}
+		
+		public function GetResultString()
+		{
+			return $this->resultString;
+		}
+		
+		public function WasSuccessful()
+		{
+			if ($this->wasOrderSuccessful)
+			{
+				return '1';
 			}
 			
-			return $this->resultString;
+			return '0';
+		}
+		
+		public function DrinkOrdered()
+		{
+			return $this->drinkName;
+		}
+		
+		public function GetOrderId()
+		{
+			return $this->orderId;
 		}
 		
 		// verify cleanliness... should these 3 order types be different classes?
@@ -247,16 +278,17 @@ these can both be changed
 			//SELECT name FROM single WHERE station>-1 AND volume>=35 ORDER BY Random() LIMIT 1
 			$queryResult = $this->database->StartQuery()
 				->select('name')
-				->from(Database::SingleTable)
+				->from(Database::SingleTable, 'u')
 				->where('station > -1')
 				->andWhere('volume >= 35')
+				->andWhere('proof > 10')
 				->orderBy('RANDOM()')
 				->setMaxResults(1)
 				->execute()
 				->fetchColumn();
 			
 			// Verify correct use of empty() to determine no results
-			if ($queryResult)
+			if (!$queryResult)
 			{
 				throw new Exception('Query returned no shots.');
 			}
@@ -287,10 +319,10 @@ these can both be changed
 				$queryBuilder->orWhere("name = \"$componentName\"");
 			}
 			
-			$queryResults = $queryBuilder->execute()
+			$this->singleComponentsQueryResults = $queryBuilder->execute()
 				->fetchAll();
 			
-			foreach ($queryResults as $row)
+			foreach ($this->singleComponentsQueryResults as $row)
 			{
 				$componentName = $row['name'];
 				$volumeToPour = $this->namesToVolumesMap[$componentName];
@@ -303,14 +335,12 @@ these can both be changed
 					throw new Exception("Only $currentVolume mL of $componentName remaining. $volumeToPour mL required.");
 				}
 			}
-			
-			$this->RemoveOrderFromTable($queryResults);
 		}
 		
-		private function RemoveOrderFromTable($queryResults)
+		private function RemoveOrderFromTable()
 		{
 			//UPDATE single SET volume=volume-{volumeToPour} WHERE station={station}
-			foreach ($queryResults as $row)
+			foreach ($this->singleComponentsQueryResults as $row)
 			{
 				$componentName = $row['name'];
 				$volumeToPour = $this->namesToVolumesMap[$componentName];
@@ -326,35 +356,34 @@ these can both be changed
 		
 		private function FindOpenStation()
 		{
-			//SELECT station FROM stations WHERE amount=0 ORDER BY Random() LIMIT 1
+			//SELECT station FROM queue
 			$queryResult = $this->database->StartQuery()
 				->select('station')
-				->from(Database::StationsTable, 'u')
-				->where('amount = 0')
-				->orderBy('Random()')
-				->setMaxResults(1)
-				->execute()
-				->fetchColumn();
-			
-			if ($queryResult === false)
+				->from(Database::QueueTable, 'u')
+				->execute();
+
+			$stationIndices = array(0, 1, 2, 3, 4, 5, 6, 7);
+
+			foreach ($queryResult as $row)
 			{
-				throw new Exception('Queue is currently full.');
+				$occupiedStation = $row['station'];
+				$stationIndices[$occupiedStation] = -1;
 			}
 			
-			$openStation = $queryResult;
+			function testOccupied($var)
+			{
+				return $var != -1;
+			}
 			
-			$this->OccupyStation($openStation);
+			$stationIndices = array_filter($stationIndices, "testOccupied");
+			if (empty($stationIndices))
+			{
+				throw new Exception('Queue is currently full.');
+			}	
+
+			$openStation = array_rand($stationIndices);
+			
 			return $openStation;
-		}
-		
-		private function OccupyStation($openStation)
-		{
-			//UPDATE stations SET amount=amount+1 WHERE station={station}
-			$this->database->StartQuery()
-				->update(Database::StationsTable)
-				->set('amount', 'amount + 1')
-				->where('station = ' . $openStation)
-				->execute();
 		}
 		
 		private function PlaceInQueue($station)
@@ -373,6 +402,17 @@ these can both be changed
 				->setParameter(0, $orderString)
 				->setParameter(1, $station)
 				->execute();*/
+		}
+		
+		private function GetQueueId($stationOfOrder)
+		{
+			// SELECT ID from queue where station = $stationOfOrder
+			$this->orderId = $this->database->StartQuery()
+				->select('ID')
+				->from(Database::QueueTable, 'u')
+				->where("station = $stationOfOrder")
+				->execute()
+				->fetchColumn();
 		}
 	}
 ?>

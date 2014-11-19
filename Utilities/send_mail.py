@@ -62,5 +62,5 @@ if (add_attachment == 1):
 s = smtplib.SMTP('smtp.gmail.com:587')
 s.starttls()
 s.login('triomproductions@gmail.com','pi@1335e')
-s.sendmail('triomproductions@gmail.com',['triomproductions@gmail.com'], msg.as_string())
+s.sendmail('triomproductions@gmail.com',msg['To'], msg.as_string())
 s.quit()

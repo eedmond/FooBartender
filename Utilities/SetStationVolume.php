@@ -8,7 +8,7 @@ ini_set('display_startup_errors',1);
 */
 require_once(dirname(__FILE__) . '/QueueManager.php');
 require_once(dirname(__FILE__) . "/Database.php");
-require_once(dirname(__FILE__) . "/UpdateDrinkAvailability.php");
+require_once(dirname(__FILE__) . "../Orders/UpdateDrinkAvailability.php");
 
 if (isset($_GET['station']) && isset($_GET['volume']))
 {
