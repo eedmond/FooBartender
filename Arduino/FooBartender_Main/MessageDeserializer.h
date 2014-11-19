@@ -7,7 +7,7 @@ class MessageDeserializer
 public:
     Message message;
     
-    unsigned char rawString[50];
+    unsigned char* rawString;
     
     MessageDeserializer(unsigned char* data, int sizeOfData);
     ~MessageDeserializer();

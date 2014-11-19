@@ -66,12 +66,6 @@ void setup()
     SendMessage(PAYLOAD_ARDUINO_STARTUP_FAIL); //homing failed
   }
   
-  MessageStatus messageStatus = GetMessage();
-  while (messageStatus == MESSAGE_STATUS_RESEND)
-  {
-    MessageStatus messageStatus = GetMessage();
-  }
-  
   motor.setMaxSpeed(MOTOR_SPEED_FULL);
 }
 

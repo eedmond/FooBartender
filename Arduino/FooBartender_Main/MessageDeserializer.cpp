@@ -6,27 +6,23 @@ MessageDeserializer::MessageDeserializer(unsigned char* data, int sizeOfData)
     this->message.header.payloadID = 0x00;
     this->message.header.messageSize = 0x00;
     
-//    if (sizeOfData > 0)
-//    {
-//        this->rawString = new unsigned char[sizeOfData];
-//        for (int i = 0; i < sizeOfData; i++)
-//        {
-//            this->rawString[i] = data[i];
-//        }
-//    }
-    for (int i = 0; i < 50; i++)
+    if (sizeOfData > 0)
     {
-      this->rawString[i] = 0;
+        this->rawString = new unsigned char[sizeOfData];
+        for (int i = 0; i < sizeOfData; i++)
+        {
+            this->rawString[i] = data[i];
+        }
     }
 }
 
 
 MessageDeserializer::~MessageDeserializer()
 {
-//    if (this->rawString)
-//    {
-//        delete[] this->rawString;
-//    }
+    if (this->rawString)
+    {
+        delete[] this->rawString;
+    }
 }
 
 
@@ -51,7 +47,7 @@ bool MessageDeserializer::ParseMessage()
     }
     
     this->message.payloadSize = this->message.header.messageSize - HEADER_SIZE - FOOTER_SIZE;
-    //this->message.payload = new unsigned char[this->message.payloadSize];
+    this->message.payload = new unsigned char[this->message.payloadSize];
     
     for (int i = 0; i < this->message.payloadSize; i++)
     {
