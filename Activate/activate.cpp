@@ -12,13 +12,13 @@ int main()
 {
 
 	char fileName[] = "/var/www/Activate/pid_store";
-	fstream file(fileName);
-	file.open(fileName, fstream::in | fstream::out | fstream::trunc);
+	fstream file;
+	file.open(fileName);
 
 	cout << "Starting..." << endl;
 	
 	//If file exists
-	if (file)
+	if (file.is_open())
 	{
 		cout << "File exists! Looking at process id." << endl;
 		//Grab the pid
@@ -37,7 +37,12 @@ int main()
 		remove(fileName);
 		file.open(fileName, fstream::in | fstream::out | fstream::trunc);
 	}
-	
+	else
+	{
+		cout << "File does not exist. Creating!" << endl;
+		file.clear();
+		file.open(fileName, fstream::out);
+	}
 	pid_t pid = fork();
 	
 	if (pid == -1)

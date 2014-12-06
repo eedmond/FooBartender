@@ -1,3 +1,31 @@
 Entering startup state
 Starting Header Poll
 Reading...
+Reading 9 bytes
+destination = 3a
+size = 4
+id = a0
+Header Poll Complete
+this checkSum: 9e
+Message Received
+My payloadId: a0
+expectedID: a0
+destination: 3a
+startCode: a0
+Arduino Startup Successful
+Entering WaitForStartButtonState
+Starting Header Poll
+Reading...
+Reading 5 bytes
+destination = 3a
+size = 5
+id = c0
+Header Poll Complete
+this checkSum: ff
+Message Received
+My payloadId: c0
+expectedID: b0
+Contacts Updated to 0
+Contact Payload: 0
+Starting Header Poll
+Reading...
