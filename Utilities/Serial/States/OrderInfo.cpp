@@ -3,10 +3,10 @@
 vector<int> OrderInfo::stationsToVisit;
 bool OrderInfo::orderComplete;
 
-void OrderInfo::Initialize(char initialContacts)
+void OrderInfo::Initialize()
 {
 	srand (int (time(0)));
-	valveData.Initialize(initialContacts);
+	valveData.Initialize();
 	orderComplete = false;
 
 	stationsToVisit.clear();

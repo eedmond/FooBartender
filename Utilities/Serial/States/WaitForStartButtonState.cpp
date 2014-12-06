@@ -7,14 +7,6 @@ WaitForStartButtonState::WaitForStartButtonState()
 
 void WaitForStartButtonState::Respond()
 {
-	char initialContacts = GetInitialContacts();
-	cout << "InitialContacts: " << hex << (int) initialContacts << endl;
-	orderInfo.Initialize(initialContacts);
-
+	orderInfo.Initialize();
 	CreateMessage();
-}
-
-char WaitForStartButtonState::GetInitialContacts()
-{
-	return response->payload[0];
 }

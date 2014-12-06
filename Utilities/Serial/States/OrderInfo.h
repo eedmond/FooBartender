@@ -15,7 +15,7 @@ class OrderInfo
 	static int GetNextStationToVisit();
 
   public:
-	static void Initialize(char initialContacts);
+	static void Initialize();
 	static unsigned char* GetNextOrderString();
 	static void UpdateVolumes(unsigned char* timesPoured);
 	static void UploadBackToDatabase();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ResponseMessage.h"
+#include "../States/Contacts.h"
 
 using namespace std;
 

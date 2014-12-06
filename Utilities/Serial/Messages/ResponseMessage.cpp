@@ -13,12 +13,15 @@ unsigned char ResponseMessage::PayloadIdToSize(unsigned char payloadId)
 			payloadIdSize = 0;
 			break;
 		case (0xB0):
-			payloadIdSize = 1;
+			payloadIdSize = 0;
 			break;
 		case (0xB2):
 			payloadIdSize = 32;
 			break;
 		case (0xE0):
+			payloadIdSize = 1;
+			break;
+		case (0xC0):
 			payloadIdSize = 1;
 			break;
 		default:
@@ -31,12 +34,12 @@ unsigned char ResponseMessage::PayloadIdToSize(unsigned char payloadId)
 
 void ResponseMessage::WaitForResponse()
 {	
-	/********************* Poll and wait for message *************************/	
+	/********************* Poll and wait for message *************************/
 	pollfd parameters;
 	parameters.fd = SerialPort::GetFileDescriptor();
 	parameters.events = POLLIN;
 	
-	while (true)
+	do
 	{
 		try
 		{
@@ -50,9 +53,11 @@ void ResponseMessage::WaitForResponse()
 				if (this->payloadId == 0xE0)
 				{
 					HandleResendRequest();
-					continue;
 				}
-				HandleUnexpectedResponse();
+				else
+				{
+					HandleUnexpectedResponse();
+				}
 			}
 		}
 		catch (runtime_error& e)
@@ -65,11 +70,8 @@ void ResponseMessage::WaitForResponse()
 				this->payload = nullptr;
 			}
 			RequestResendMessage();
-			continue;
 		}
-
-		break;
-	}
+	} while (this->payloadId != this->expectedPayloadId);
 }
 
 void ResponseMessage::ConstructResponse(pollfd& parameters)

@@ -1,4 +1,4 @@
-OBJECTS = SerialPort.o SerialCommunication.o States/SerialState.o States/StartState.o States/WaitForStartButtonState.o States/MoveAndPourState.o States/ValveData.o States/OrderInfo.o Messages/Message.o Messages/MoveAndPourSendMessage.o Messages/MoveAndPourResponseMessage.o Messages/WaitForStartButtonResponseMessage.o Messages/ResponseMessage.o Messages/SendMessage.o Messages/StartUpSendMessage.o Messages/StartUpResponseMessage.o
+OBJECTS = SerialPort.o SerialCommunication.o States/SerialState.o States/StartState.o States/WaitForStartButtonState.o States/MoveAndPourState.o States/ValveData.o States/OrderInfo.o States/Contacts.o Messages/Message.o Messages/MoveAndPourSendMessage.o Messages/MoveAndPourResponseMessage.o Messages/WaitForStartButtonResponseMessage.o Messages/ResponseMessage.o Messages/SendMessage.o Messages/StartUpSendMessage.o Messages/StartUpResponseMessage.o
 
 FLAGS = -Wall -pedantic
 LFLAGS = -lsqlite3 -lwiringPi

@@ -19,7 +19,7 @@ void StartState::Respond()
 		message.SetResult(PI_STARTUP_FAILURE);
 	}
 	
-	message.Send();
+	//message.Send();
 }
 
 bool StartState::VerifyResponse()

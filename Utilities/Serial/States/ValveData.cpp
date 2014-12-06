@@ -6,13 +6,13 @@ vector<int> ValveData::databaseValveVolumes(16, 0);
 vector<int> ValveData::queueValveVolumes(16, 0);
 sqlite3* ValveData::db;
 
-void ValveData::Initialize(unsigned char initialContacts)
+void ValveData::Initialize()
 {
 	OpenDatabase();
 
 	ZeroVectors();
 	PullDatabaseValveVolumes();
-	PullOrdersFromQueue(initialContacts);
+	PullOrdersFromQueue();
 	cout << "Volume Commands: " << endl;
 	for (int i = 0; i < 8; ++i)
 	{
@@ -175,8 +175,9 @@ int ValveData::PullQueueVolumes(void *data, int argc, char **argv, char **azColN
 	return 0;
 }
 
-void ValveData::PullOrdersFromQueue(unsigned char initialContacts)
+void ValveData::PullOrdersFromQueue()
 {
+	unsigned char contactList = Contacts::GetActiveContacts();
 	char sqlSelect[180];
 	char sqlDelete[180];
 
@@ -185,7 +186,7 @@ void ValveData::PullOrdersFromQueue(unsigned char initialContacts)
 
 	for (char i = 0; i < 8; ++i)
 	{
-		char contactHigh = initialContacts & (1 << i);
+		char contactHigh = contactList & (1 << i);
 
 		if (contactHigh != 0)
 		{
